@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <title>Scroll</title>
+    <style>
+        .navContainer{
+            position:fixed;
+            top:50%;
+            left:50%;
+        }
+        .navItem{
+            height: 20px;
+            width: 40px;
+            border:1px solid red
+        }
+        .container{
+            width:100vw;
+        }
+        .anchor{
+            height: 2px;
+            background-color:hotpink;
+        }
+        .block{
+            padding-top:50%;
+            height: 300px;
+            width:100%;
+            border:1px solid green
+        }
+        .indigo{
+            background-color:indigo
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+            <div class="navContainer">
+                <section style="display:flex">
+                    <div :class="['navItem',acitveIndex===index?'indigo':'']" v-for="(item,index) in display_arr">
+                        {{index}}
+                    </div>
+                </section>
+            </div>
+            <section class="container">
+                <section v-for="(item,index) in display_arr">
+                        <div class="anchor"></div>
+                        <div class="block"></div>
+                </section>
+
+            </section>
+    </div>
+</body>
+<script>
+    new Vue({
+        el:'#app',
+        data:{
+            acitveIndex:0,//高亮的index
+            myAnchor:[],//获取anchor列表
+            display_arr:[
+                {name:'1'},
+                {name:'2'},
+                {name:'3'},
+                {name:'4'},
+            ],
+
+        },
+        //mounted 数据全部挂载渲染完毕后
+        mounted(){
+            
+            this.myAnchor = this.getDivNodes('anchor');
+            window.addEventListener('scroll',this.listenScroll)
+        },
+        methods:{
+            getDivNodes(name){
+                return document.querySelectorAll(`.${name}`)
+            },
+            listenScroll(){
+                let tempLog = 0;
+                this.myAnchor.forEach((item,index)=>{
+                    if(document.documentElement.scrollTop>=item.offsetTop){
+                        tempLog = index
+                    }
+                    
+                })
+                this.acitveIndex = tempLog
+                // console.log(this.acitveIndex)
+            }
+        }
+    })
+</script>
+</html>
