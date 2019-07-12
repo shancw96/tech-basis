@@ -26,31 +26,52 @@
 </body>
 
 <script>
+    const destination = '江苏省淮安市清河区万达广场'
     let map = new BMap.Map('myMap');
     map.enableScrollWheelZoom(true);    //开启鼠标滚轮缩放
 
     // init
-    let point = new BMap.Point(116.404, 39.915) //初始化显示的经纬度，天安门
-    map.centerAndZoom(point,15) //缩放级别
+    let startPos = new BMap.Point(116.404, 39.915) //初始化显示的经纬度，天安门
+    map.centerAndZoom(startPos,15) //定位并且指定缩放
     
     //获取当前位置
-    var geolocation = new BMap.Geolocation();
+    let geolocation = new BMap.Geolocation();
     geolocation.getCurrentPosition(function(r){
 	if(this.getStatus() == BMAP_STATUS_SUCCESS){
-        alert('success'+this.getStatus());
-		var mk = new BMap.Marker(r.point);
+
+		let mk = new BMap.Marker(r.point);
 		map.addOverlay(mk);
 		map.panTo(r.point);
          //指定经纬度，重新渲染
-        point = new BMap.Point(r.point.lng, r.point.lat) 
-        map.centerAndZoom(point,15)
+        startPos = new BMap.Point(r.point.lng, r.point.lat) 
+        map.centerAndZoom(startPos,15)
 	}
 	else {
-		alert('failed'+this.getStatus());
+		alert('地址获取失败');
 	}
-
+    
+    //地址解析，用于用户输入
+    function getMyPos(address_string){
+        // 创建地址解析器实例     
+        var myGeo = new BMap.Geocoder();
+        myGeo.getPoint(address_string,function(finalPos){
+            if(finalPos){
+                console.log('---get My Pos---')
+                console.log(finalPos)
+                // map.centerAndZoom(finalPos,11)
+                // map.addOverlay(new BMap.Marker(finalPos))
+            }
+        },getCurrentCity())
+    }
    
-
+    //IP定位
+    function getCurrentCity(){
+        let myCity = new BMap.LocalCity();
+        return myCity.get(function(result){
+            console.log('IP 定位：'+result.cityName)
+            return result.cityName
+        })
+    }
 });
 
 
