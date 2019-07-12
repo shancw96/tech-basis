@@ -17,8 +17,7 @@ var topKFrequent = function(nums, k) {
   nums.forEach(num=>{
     hash[num]?hash[num]+=1:hash[num]=1
   })
-  var tempArr = Object.keys(hash).sort((key1,key2)=>hash[key2]-hash[key1]).slice(0,k)
-  console.log(tempArr)
+  return Object.keys(hash).sort((key1,key2)=>hash[key2]-hash[key1]).slice(0,k)
 };
 
 topKFrequent([6,0,1,4,9,7,-3,1,-4,-8,4,-7,-3,3,2,-3,9,5,-4,0],6)
