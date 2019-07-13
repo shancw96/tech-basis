@@ -29,6 +29,17 @@ class NodeList {  //链表 接收数组初始化
     }
     return curNode
   }
+
+  toString(){
+    let curNode = this.head;
+    let strList = [];
+    while(curNode.next){
+      strList.push(JSON.stringify(curNode.val));
+      curNode = curNode.next
+    }
+    strList.push(JSON.stringify(curNode.val))
+    return strList.join('->')
+  }
 }
 
 // let myList = new NodeList([1,2,3,4])
