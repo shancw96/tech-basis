@@ -25,5 +25,5 @@ let params = getParams(urlArr[2],'elective')
 console.log(params)
 
 /**
- * [^&] 匹配所有非
+ * [^&] 匹配单个非&字符  [^&]* 匹配所有非&字符
  */
