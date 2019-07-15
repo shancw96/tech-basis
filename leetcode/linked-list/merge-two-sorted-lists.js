@@ -1,3 +1,4 @@
+
 /**
  * Definition for singly-linked list.
  * function ListNode(val) {
@@ -10,26 +11,21 @@
  * @param {ListNode} l2
  * @return {ListNode}
  */
-// requr NodeList from "./sourceCode.js";
-let NodeList = require('./sourceCode')
-
 var mergeTwoLists = function(l1, l2) {
-  let l1P = l1.head;
-  let l2P = l2.head
-  while(l2P){
-    let tempLink1 = l1P.next;
-    let tempLink2 = l2P.next;
-    // l1P.next = l2P;
-    // l1P = tempLink1
-    // l2P.next = l1P.next
-    // l2P = tempLink2
-    l2P.next = l1.next
-    l1P.next = l2P
-    
-}
-// return l1P
-console.log(l1P)
+  let headNew 
+  let newList = new ListNode(0)
+  headNew = newList
+  while(l1 && l2 ){
+      if(l1.val >= l2.val){
+          newList.next = l2
+          l2 = l2.next
+      }else {
+          newList.next = l1
+          l1 = l1.next
+      }
+      
+      newList = newList.next
+  }
+  newList.next = l1 || l2
+  return headNew.next
 };
-let l1 = new NodeList([1,3,5])
-let l2 = new NodeList([2,4,6])
-mergeTwoLists(l1,l2)
