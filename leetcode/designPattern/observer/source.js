@@ -21,10 +21,11 @@ class Subject {
 }
 
 class Observer {
-  constructor(name,subject){
+  constructor(name,...arr){
     this.name = name;
-    this.subject = subject;
-    this.subject.attach(this)
+    this.subject1 = subject;
+    this.subject1.attach(this)
+    this
   }
   update(){
     console.log(`update: oberser:${this.name} get new state:${this.subject.getState()}`)
@@ -32,4 +33,4 @@ class Observer {
 }
 let s = new Subject()
 let myObserver = new Observer('zhangsan',s)
-s.setState(4)
+s.setState(4)//update: oberser:zhangsan get new state:4
