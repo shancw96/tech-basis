@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .box{
+      width:500px;
+      height: 500px;
+      margin-bottom:50px;
+      background-color:aqua;
+    }
+  </style>
+</head>
+<body>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+</body>
+<!-- <script src="debounce.js"></script> -->
+<script>
+  // let debounce = require('./debounce.js')
+
+  let counter = 0;
+  document.addEventListener('scroll',throttle(watch,100))
+
+  //观察
+  function watch(){
+    console.log(counter+=1)
+  }
+
+  //防抖
+  function debounce(fn,delay=100){
+    let timer = null;
+    return ()=>{
+      clearTimeout(timer)
+      timer = setTimeout(()=>{
+        fn()
+      },delay)
+    }
+  }
+
+  function throttle(fn,delay){
+    let prev = Date.now()//闭包保存开始事件
+    return ()=>{
+      let now = Date.now()
+      if(now-prev>=delay){
+        fn();
+        prev = Date.now()//修改闭包的开始时间
+      }
+    }
+  }
+
+</script>
+</html>
