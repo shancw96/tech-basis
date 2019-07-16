@@ -6,56 +6,64 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <style>
-    .box{
+    .container{
       width:500px;
-      height: 500px;
-      margin-bottom:50px;
-      background-color:aqua;
+      height:1000px;
+      display: flex;
+      align-items:center;
+      background-color:bisque;
+      margin-bottom: 1px
     }
+    .box{
+      width:200px;
+      height: 200px;
+      background-color:aqua;
+      
+    }
+
+    .slide-in{
+      opacity:0;
+      transition:all 0.2s;
+      transform: translateX(-30%);
+    }
+    .slide-in.active{
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* .active{
+      border:2px solid gold;
+    } */
   </style>
 </head>
 <body>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
+    <article class="container"></article>
+  <article class="container">
+      <div class="box slide-in active" anchor="box1"></div>
+  </article>
+
+  
+  
 </body>
-<!-- <script src="debounce.js"></script> -->
 <script>
-  // let debounce = require('./debounce.js')
-
   let counter = 0;
-  document.addEventListener('scroll',throttle(watch,100))
-
+  
+  let anchor1 = document.querySelector(`div.box[anchor="box1"]`)
+  // console.log(anchor1.getBoundingClientRect().bottom+anchor1.getBoundingClientRect().height/2)、
+  // console.log(anchor1.offsetTop)
+  
+  let container = document.querySelector('article.container')
+  document.addEventListener('scroll',throttle(watch,50,anchor1))
   //观察
-  function watch(){
-    console.log(counter+=1)
+  function watch(args){
+    let hasScrolled = window.scrollY
+    let anchor1 = args[0].getBoundingClientRect()
+    let hasPassedHalf = (window.scrollY+window.innerHeight)>(args[0].offsetTop+anchor1.height/2)
+    if(hasPassedHalf == true){
+      document.querySelector(`div.box[anchor="box1"]`).classList.add('active')
+    }else{
+      document.querySelector(`div.box[anchor="box1"]`).classList.remove('active')
+    }
   }
 
   //防抖
@@ -69,12 +77,13 @@
     }
   }
 
-  function throttle(fn,delay){
+  //时间戳节流
+  function throttle(fn,delay,...args){
     let prev = Date.now()//闭包保存开始事件
     return ()=>{
       let now = Date.now()
       if(now-prev>=delay){
-        fn();
+        fn(args);
         prev = Date.now()//修改闭包的开始时间
       }
     }
