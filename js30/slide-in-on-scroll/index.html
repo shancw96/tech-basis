@@ -46,13 +46,7 @@
   
 </body>
 <script>
-  let counter = 0;
-  
   let anchor1 = document.querySelector(`div.box[anchor="box1"]`)
-  // console.log(anchor1.getBoundingClientRect().bottom+anchor1.getBoundingClientRect().height/2)、
-  // console.log(anchor1.offsetTop)
-  
-  let container = document.querySelector('article.container')
   document.addEventListener('scroll',throttle(watch,50,anchor1))
   //观察
   function watch(args){
