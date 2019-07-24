@@ -4,7 +4,7 @@ function deepClone(source){
       return source
   }
   
-  //当前的Value的类型
+  //当前的Value的类型,不干预上一层deepClone的cloneObj值
   let cloneObj = source instanceof Array ? []:{};
   
   Object.keys(source).forEach(key=>{
