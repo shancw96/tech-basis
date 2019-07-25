@@ -1,24 +1,15 @@
-//递归
-function deepClone(source){
-  if(typeof source !== "object"){
-      return source
+递归
+function deepClone(sourceObj){
+  if(typeof sourceObj !== 'object'){
+    return sourceObj
   }
-  
-  //当前的Value的类型,不干预上一层deepClone的cloneObj值
-  let cloneObj = source instanceof Array ? []:{};
-  
-  Object.keys(source).forEach(key=>{
-      cloneObj[key] = deepClone(source[key])
+
+  let cloneObj = sourceObj instanceof Array ? [] : {}
+
+  Object.keys(sourceObj).forEach(key=>{
+    cloneObj[key] = deepClone(sourceObj[key]);//最外层的cloneObj一直存在cloneObj = deepClone(deepClone(deepClone))  return return return 
   })
   return cloneObj
 }
 
-let obj = {
-  a:{
-    b:1
-  },
-  c:[
-    1,2
-  ]
-}
-console.log(deepClone(obj))
+console.log(deepCloneDepth({a:{b:1}}))
