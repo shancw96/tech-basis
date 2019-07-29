@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>touch event</title>
+  <style>
+    body{
+      margin:0;
+    }
+    .container{
+      width:400px;
+      height:800px;
+      border:1px solid palevioletred;
+      position: relative;
+    }
+    .content{
+      width:100px;
+      height:100px;
+      position:absolute;
+      top:0;
+      left:0;
+      background:grey;
+    }
+  </style>
+</head>
+<body>
+  <article class="container">
+    <div class="content"></div>
+  </article>
+</body>
+<script>
+  let dragItem = document.querySelector('.content');
+  dragItem.addEventListener('touchstart',e=>{
+    let disX = e.targetTouches[0].clientX - dragItem.offestWidth;//点击pos距离当前元素左侧的距离，固定值
+    let disY = e.targetTouches[0].clientY - dragItem.offsetTop;//点击pos距离当前元素顶部的距离，固定值
+    
+    dragItem.addEventListener('touchmove',e=>{
+      dragItem.style.left = e.targetTouches[0].clientX - disX + 'px'//移动时候的触摸点 = disX+left 触摸点变化导致left年华
+      dragItem.style.top = e.targetTouches[0].clientY - disY + 'px'
+    })
+    dragItem.addEventListener('touchend',doSomething)
+    
+  })
+  function doSomething(e){
+    console.log('do something')
+
+  }
+</script>
+</html>
