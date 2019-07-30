@@ -9,6 +9,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "fs": "0.0.1-security"
+    "fs": "^0.0.1-security",
+    "iconv-lite": "^0.5.0"
+  },
+  "dependencies": {
+    "encoding": "^0.1.12"
   }
 }

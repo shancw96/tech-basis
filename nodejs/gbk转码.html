@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="encode_btn"></div>
+  <!-- onsubmit="return onsb(this)" -->
+
+  <form method="get" action="#" accept-charset="GBK" onsubmit="return onsb(this)" >
+    <input type="text" name="wd" value="测试">
+    <input type="submit" value="提交">
+  </form>
+
+  <script>
+function onsb(fm){
+let str = fm.action.match(/(wd=).+#$/)[0]
+let result = str.slice(3,str.length-1)
+alert('GBK转码为'+result)
+return false;
+}
+  </script>
+</body>
+</html>
