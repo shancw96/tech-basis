@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>睡眠波动</title>
+  <style>
+  body{
+    margin:0;
+    background: rgba(90, 118, 219, 0.781);
+    display:flex;
+    justify-content: center;
+    align-items:center;
+    height: 1000px;
+  }
+  .container{
+    width:100vw;
+    height: 300px;
+    background: #fff;
+    /* border:1px solid red; */
+    margin-top:40px;
+    padding:1px;
+    /* display: flex; */
+    position: absolute;
+    
+  }
+
+  .container.outter{
+    z-index:2;
+    background: #fff;
+  }
+  .container.under{
+    background: rgba(157, 157, 158, 0.438);
+    
+    z-index: 1;
+    top:330px;
+  }
+
+
+
+  .move{
+    position:absolute;
+    width:200px;
+    height: 200px;
+    transform: scale(2, 0.5);
+    border-radius: 50%;
+    
+    
+    /* animation: moving 8s infinite ease-in-out; */
+  }
+  .container.outter .first,.container.outter .second,.container.outter .third{
+    background: rgb(255, 255, 255);
+    z-index:2
+  }
+  .container.under .first,.container.under .second,.container.under .third{
+    background: rgba(238, 237, 237, 0.836);
+    z-index:1
+  }
+  .container.under .first{
+    top:-50px;
+    left:-50vw;
+    z-index: 0;
+    animation: movingunder 13s infinite linear;
+  }
+  .container.under .second{
+    top:-50px;
+    left:-50vw;
+    z-index: 1;
+    animation: moving 13s infinite linear;
+    animation-delay: 2s
+  }
+  .container.under .third{
+    top:-50px;
+    left:-50vw;
+    z-index:2;
+    animation: moving 15s infinite linear;
+    animation-delay: 4s
+  }
+  .container.outter .first{
+    top:-50px;
+    left:-50vw;
+    z-index: 0;
+    animation: moving 13s infinite linear;
+  }
+  .container.outter .second{
+    top:-50px;
+    left:-50vw;
+    z-index: 1;
+    animation: moving 13s infinite linear;
+    animation-delay: 4s
+  }
+  .container.outter .third{
+    top:-50px;
+    left:-50vw;
+    z-index:2;
+    animation: moving 15s infinite linear;
+    animation-delay: 6s
+  }
+  @keyframes movingunder{
+    0%{
+        transform: translate(0,-30px) scale(3, 0.4)
+      }
+      25%{
+        transform: translate(50vw,-30px) scale(3, 0.3);
+      }
+      50%{
+        transform: translate(100vw,-30px) scale(3, 0.2);
+      }
+      75%{
+        transform: translate(150vw,-30px) scale(3, 0.3);
+      }
+      100%{
+        transform: translate(190vw,-30px) scale(3, 0.4);
+      } 
+  }
+  @keyframes moving{
+      0%{
+        transform: translate(0,-30px) scale(3, 0.2)
+      }
+      25%{
+        transform: translate(50vw,-30px) scale(3, 0.4);
+      }
+      50%{
+        transform: translate(100vw,-30px) scale(4, 0.6);
+      }
+      75%{
+        transform: translate(150vw,-30px) scale(4, 0.5);
+      }
+      100%{
+        transform: translate(190vw,-30px) scale(4, 0.2);
+      }
+      /* from{
+        transform: translate(0,-30px) scale(3, 0.3)
+      }
+
+      to{
+        transform: translate(190vw,-30px) scale(2.8, 0.6);
+      } */
+
+  }
+  </style>
+</head>
+<body>
+  <div class="container outter">
+    <div class="move first"></div>
+    <div class="move second"></div>
+    <div class="move third"></div>
+  </div>
+  <div class="container under">
+      <div class="move first"></div>
+      <div class="move second"></div>
+      <div class="move third"></div>
+    </div>
+</body>
+</html>
