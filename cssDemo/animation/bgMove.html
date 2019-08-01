@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body{
+      margin:0;
+    }
+    .viewport{
+      width:100vw;
+      height: 100vh;
+      background-size: 400%;
+      background-image: linear-gradient(125deg,#55efc4,#0984e3,#fd79a8,#b2bec3);
+      animation:bgMove 15s infinite;
+      animation-direction: alternate;
+    }
+    @keyframes bgMove{
+      0%{
+        background-position: 0 0;
+      }
+      25%{
+        background-position: 100% 0;
+      }
+      50%{
+        background-position: 100% 50%;
+      }
+      75%{
+        background-position: 50% 50%;
+      }
+      100%{
+        background-position: 0 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="viewport"></section>
+</body>
+</html>
