@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>点击涟漪</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 50vh;
+    }
+
+    .tobeClicked {
+      width: 20px;
+      height: 20px;
+      position: relative;
+    }
+
+    .wave {
+      opacity: 0;
+      position: absolute;
+      top: -30%;
+      left: -20%;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid rgba(12, 120, 192, 0.6)
+        /* background:#ddd; */
+    }
+
+    .wave-1 {
+      opacity: 0;
+      position: fixed;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid rgba(12, 120, 192, 0.6);
+      animation: spread 5s ease-out;
+    }
+
+    .wave-2 {
+      animation: spread 2s ease-out;
+      animation-delay: .5s;
+    }
+
+    @keyframes spread {
+      0% {
+        opacity: 1;
+        transform: scale(0)
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(5, 5)
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <section class="tobeClicked">
+    <div class="wave"></div>
+  </section>
+</body>
+<script>
+  window.addEventListener('click', e => {
+    var newNode = document.createElement("div");
+    newNode.style.position = 'absolute'
+    newNode.style.left = (e.clientX-10)+'px'
+    newNode.style.top = (e.clientY-10)+'px'
+    newNode.classList.add('wave-1')
+    document.querySelector('body').append(newNode)
+    setTimeout(()=>{
+      newNode.remove()//删除当前的元素，一个个删除
+    },5000)
+  })
+</script>
+
+</html>
