@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>lazy load</title>
+  <style>
+    body{
+      margin:0;
+    }
+    .wrapper{
+      height: 100vh;
+      width: 100vw;
+      overflow:scroll;
+    }
+    .imgContainer{
+      height:200px;
+      width:100vw;;
+    }
+    .imgContainer img{
+      width:100%;
+      height: 100%;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <section class="wrapper">
+    <div class="imgContainer"><img src="./static/img/default.png" data-src="./static/img/real.png"></div>
+    <div class="imgContainer"><img src="./static/img/default.png" data-src="./static/img/real.png"></div>
+    <div class="imgContainer"><img src="./static/img/default.png" data-src="./static/img/real.png"></div>
+    <div class="imgContainer"><img src="./static/img/default.png" data-src="./static/img/real.png"></div>
+    <div class="imgContainer"><img src="./static/img/default.png" data-src="./static/img/real.png"></div>
+    <div class="imgContainer"><img src="./static/img/default.png" data-src="./static/img/real.png"></div>
+    <div class="imgContainer"><img src="./static/img/default.png" data-src="./static/img/real.png"></div>
+    <div class="imgContainer"><img src="./static/img/default.png" data-src="./static/img/real.png"></div>
+    <div class="imgContainer"><img src="./static/img/default.png" data-src="./static/img/real.png"></div>
+    <div class="imgContainer"><img src="./static/img/default.png" data-src="./static/img/real.png"></div>
+  </section>
+</body>
+<script>
+  let scrolledContainer = document.querySelector('.wrapper')
+  let lazyLoadImgs = document.querySelectorAll('.imgContainer img')
+  let exampleImg = lazyLoadImgs[0].getBoundingClientRect();
+  let anchorStore = []
+
+  init()//初始化界面时候执行一次
+
+  scrolledContainer.addEventListener('scroll',throttle(handleScroll,100))
+
+
+  function init(){
+    lazyLoadImgs.forEach(img=>{
+      anchorStore.push(img.getBoundingClientRect().top)
+    })
+    handleScroll()
+  }
+
+  function handleScroll(){
+    let visualHeight = window.innerHeight
+    let scrolled = visualHeight+scrolledContainer.scrollTop
+    //超过的自己更改属性值为data-src的值
+    anchorStore.forEach((anchor,index)=>{
+      //先实现功能在进行二分法
+      if(anchor<scrolled){
+        changeImgSoruce(lazyLoadImgs,index)
+      }
+    })
+  }
+
+  function changeImgSoruce(arr,index){
+    let tobeChanged = arr[index]
+    let realSrc = tobeChanged.getAttribute('data-src') 
+    tobeChanged.setAttribute('src',realSrc)
+  }
+
+  function throttle(fn,delay){
+    let prev = Date.now();//私有变量，不参与多次let，返回的函数才进行多次执行
+    return ()=>{
+      let now = Date.now()
+        if(now-prev >= delay){
+          fn()
+          prev = Date.now()
+        }
+      }
+
+  }
+</script>
+</html>
