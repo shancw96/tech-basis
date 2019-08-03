@@ -1,0 +1,14 @@
+body{
+  margin:0;
+  font-size:10px;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  height: 50rem;
+}
+.container{
+  border-radius: 1rem;
+  width:20rem;
+  height: 10rem;
+  background: radial-gradient(circle at var(--x) var(--y),#ecf0f1, #2980b9);
+}

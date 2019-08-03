@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="./index.css">
+  <title>Document</title>
+</head>
+<body>
+  <section class="container" style="--x:0;--y:0"></section>
+</body>
+<script>
+  let card = document.querySelector('.container');
+  card.addEventListener('mousemove',e=>{
+    e.target.style.setProperty('--x',e.clientX-e.target.offsetLeft+'px')
+    e.target.style.setProperty('--y',e.clientY-e.target.offsetTop+'px')
+  })
+</script>
+</html>
