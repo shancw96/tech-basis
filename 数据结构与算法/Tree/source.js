@@ -59,13 +59,4 @@ class BST{
   }
 
 }
-
-let newTree = new BST();
-
-for(let item of [50,10,70,5,15,60,80]){
-  newTree.insert(item)
-}
-console.log('=====inorder-======')
-newTree.inOrder()
-console.log('=====prevorder-======')
-newTree.prevOrder()
+module.exports = BST
