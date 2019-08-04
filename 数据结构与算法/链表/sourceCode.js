@@ -10,6 +10,9 @@ class Node{ //链表节点
 
 class NodeList {  //链表 接收数组初始化
   constructor(array){
+    if(Object.prototype.toString.call(array) !== '[object Array]'){
+      array = [array]//输入单个树
+    }
     array.forEach((elem,index)=>{
       if(index == 0 ) this.head = new Node(elem)//初始化链表的头节点
       else this.insertInNext(elem) 
@@ -55,3 +58,5 @@ class NodeList {  //链表 接收数组初始化
 
 // let myList = new NodeList([1,2,3,4])
 module.exports = NodeList
+
+
