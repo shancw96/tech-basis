@@ -38,6 +38,12 @@ class BST{
       }
     }
   }
+  create(arr){
+    if(Object.prototype.toString.call(arr) !== '[object Array]') return ;
+    arr.forEach(item=>{
+      this.insert(item)
+    })
+  }
   //前中后序的遍历，其实入栈相同的次数，不同处只是选取不同的步骤进行操作而已,图示的箭头就表示打印的过程
   prevOrder(node=this.root){
     if(node == null) return ;
