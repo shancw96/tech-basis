@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body{
+      padding:0;
+      margin:0;
+
+    }
+    .wrapper{
+      width:50vw;
+      height: 50vh;
+      border:1px solid red;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .display-part{
+      border:1px solid red;
+      width:70%;
+      height:20px;
+      text-align: center;
+      overflow:hidden;
+    }
+    .item{
+      height: 20px;
+    }
+    .moveDown{
+      animation: moveDown 10s linear infinite ;
+      /* animation-direction: alternate; */
+    }
+    @keyframes moveDown{
+      0%{
+        transform: translateY(0)
+      }
+      100%{
+        transform: translateY(-100%)
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="wrapper">
+    <section class="display-part ">
+      <section class="moveDown">
+          <div class="item">123</div>
+          <div class="item">456</div>
+          <div class="item">1234</div>
+          <div class="item">12</div>
+          <div class="item">1200</div>
+          <!-- <div class="item">123</div> -->
+          <!-- <div class="item">到底啦</div> -->
+      </section>
+
+    </section>
+  </section>
+</body>
+<script>
+  let visualBody = document.querySelector('.display-part');
+  let infoHeight = document.querySelectorAll('.item')[0].offsetHeight
+  let offsetVisual = 0
+  // setInterval(()=>{
+  //   visualBody.scrollTo(0,offsetVisual)
+  //   offsetVisual+=infoHeight
+  // },2*1000)
+</script>
+</html>
