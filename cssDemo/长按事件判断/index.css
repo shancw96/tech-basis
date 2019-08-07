@@ -1,0 +1,70 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border: 1px solid red;
+}
+
+.container .fiction {
+  width: 10vw;
+  height: 20vh;
+  background: #ddd;
+}
+
+.container .fiction .dot {
+  width: 4vw;
+  height: 4vh;
+  border-radius: 50%;
+  background: red;
+}
+
+.shaking {
+  animation: shaking .3s infinite linear reverse;
+}
+
+@-webkit-keyframes shaking {
+  0% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+  }
+  25% {
+    -webkit-transform: translateX(1px);
+            transform: translateX(1px);
+  }
+  50% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+  }
+  100% {
+    -webkit-transform: translateX(-1px);
+            transform: translateX(-1px);
+  }
+}
+
+@keyframes shaking {
+  0% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+  }
+  25% {
+    -webkit-transform: translateX(1px);
+            transform: translateX(1px);
+  }
+  50% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+  }
+  100% {
+    -webkit-transform: translateX(-1px);
+            transform: translateX(-1px);
+  }
+}
+/*# sourceMappingURL=index.css.map */
