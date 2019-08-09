@@ -1,71 +1,133 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <style>
-    body{
-      padding:0;
-      margin:0;
-
-    }
-    .wrapper{
-      width:50vw;
-      height: 50vh;
-      border:1px solid red;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .display-part{
-      border:1px solid red;
-      width:70%;
-      height:20px;
-      text-align: center;
-      overflow:hidden;
-    }
-    .item{
-      height: 20px;
-    }
-    .moveDown{
-      animation: moveDown 10s linear infinite ;
-      /* animation-direction: alternate; */
-    }
-    @keyframes moveDown{
-      0%{
-        transform: translateY(0)
-      }
-      100%{
-        transform: translateY(-100%)
-      }
-    }
-  </style>
-</head>
-<body>
-  <section class="wrapper">
-    <section class="display-part ">
-      <section class="moveDown">
-          <div class="item">123</div>
-          <div class="item">456</div>
-          <div class="item">1234</div>
-          <div class="item">12</div>
-          <div class="item">1200</div>
-          <!-- <div class="item">123</div> -->
-          <!-- <div class="item">到底啦</div> -->
-      </section>
-
-    </section>
-  </section>
-</body>
-<script>
-  let visualBody = document.querySelector('.display-part');
-  let infoHeight = document.querySelectorAll('.item')[0].offsetHeight
-  let offsetVisual = 0
-  // setInterval(()=>{
-  //   visualBody.scrollTo(0,offsetVisual)
-  //   offsetVisual+=infoHeight
-  // },2*1000)
-</script>
+<!doctype html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">  
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">  
+    <title>纯css实现文字循环滚动效果</title>  
+    <style type="text/css">  
+        * {  
+            margin: 0;  
+            padding: 0;  
+        }  
+		
+		.content .winner-list-thead-row {
+		  font-size: 0.75rem;
+		  display: flex;
+		  flex-direction: row;
+		}
+		.content .winner-list-thead-row .winner-list-td {
+		  padding: 0.5rem 0.25rem;
+		  font-size: inherit;
+		  display: flex;
+		  flex: 2;
+		  min-width: 1px;
+		  color: #000;
+		}
+		.content .winner-list-thead-row .winner-list-td:first-child {
+		  flex: 1;
+		}
+		.content .winner-list-thead-row .winner-list-td:not(:first-child) {
+		  justify-content: flex-end;
+		}
+		.content .winner-list-table {
+		  flex-direction: column;
+		  width: 100%;
+		  height: 247px;
+		  overflow: hidden;
+		  display: flex;
+		}
+		.content .winner-list-table .winner-list-tbody {
+		  position: relative;
+		  animation: scrollChild 20s linear infinite;
+		}
+		.content .winner-list-table .winner-list-tbody:hover {
+		  animation-play-state: paused;
+		}
+		.content .winner-list-table .winner-list-tbody .winner-list-cover-up-list {
+		  z-index: 1;
+		  position: relative;
+		  background-color: #fff;
+		}
+		.content .winner-list-table .winner-list-tbody .winner-list-cover-up-list         .winner-list-tbody-row {
+		  font-size: 12px;
+		  display: flex;
+		  flex-direction: row;
+		}
+		.content .winner-list-table .winner-list-tbody .winner-list-cover-up-list .winner-list-tbody-row .winner-list-td {
+		  padding: 8px 4px;
+		  font-size: inherit;
+		  display: flex;
+		  flex: 2;
+		  min-width: 1px;
+		  color: #000;
+		}
+		.content .winner-list-table .winner-list-tbody .winner-list-cover-up-list .winner-list-tbody-row .winner-list-td:first-child {
+		  flex: 1;
+		}
+		.content .winner-list-table .winner-list-tbody .winner-list-cover-up-list .winner-list-tbody-row .winner-list-td:not(:first-child) {
+		  justify-content: flex-end;
+		}
+		.content .winner-list-table .winner-list-tbody .winner-list-cover-up-list .winner-list-tbody-row:nth-child(2n) {
+		  background-color: #f2f2f2;
+		} 
+		
+		@keyframes scrollChild {
+		  0% {
+			transform: translateY(0);
+		  }
+		  to {
+			transform: translateY(-100%);
+		  }
+		}
+       
+    </style>  
+</head>  
+<body>  
+<div class="content">
+	<div>
+		<div class="winner-list-thead-row">
+			<div class="winner-list-td">用户名</div>
+			<div class="winner-list-td">奖金</div>
+			<div class="winner-list-td">彩种</div>
+		</div>
+	</div>
+	<div class="winner-list-table">
+		<div class="winner-list-tbody">
+			<div class="winner-list-cover-up-list">
+				<div class="winner-list-tbody-row">
+					<div class="winner-list-td">shu***</div>
+					<div class="winner-list-td">328.68元</div>
+					<div class="winner-list-td">极速3D</div>
+				</div>
+				<div class="winner-list-tbody-row">
+					<div class="winner-list-td">shu***</div>
+					<div class="winner-list-td">328.68元</div>
+					<div class="winner-list-td">极速3D</div>
+				</div>
+				<div class="winner-list-tbody-row">
+					<div class="winner-list-td">shu***</div>
+					<div class="winner-list-td">328.68元</div>
+					<div class="winner-list-td">极速3D</div>
+				</div>
+				<div class="winner-list-tbody-row">
+					<div class="winner-list-td">shu***</div>
+					<div class="winner-list-td">328.68元</div>
+					<div class="winner-list-td">极速3D</div>
+				</div>
+				<div class="winner-list-tbody-row">
+					<div class="winner-list-td">shu***</div>
+					<div class="winner-list-td">328.68元</div>
+					<div class="winner-list-td">极速3D</div>
+				</div>
+				<div class="winner-list-tbody-row">
+					<div class="winner-list-td">shu***</div>
+					<div class="winner-list-td">328.68元</div>
+					<div class="winner-list-td">极速3D</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>  
 </html>
