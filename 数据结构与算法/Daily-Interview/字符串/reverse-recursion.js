@@ -13,34 +13,12 @@
  */
 
  /**递归是模版套用,用一套模版重复解决相同类型的数据 */
-
+// 1234-->4123-->43 12--> 43 21
  function reversion_int(nums){
-  let str = nums+''
-  if(str.length == 1) return nums
-  let head = str.substring(str.length-1);
-  let curStr = reversion_int( str.substring(0,str.length-1))
-  let res = head+curStr
-  return res
+   let nums_str = nums+''
+   if(nums_str.length ==1) return nums
+   let reversed = nums_str.substring(nums_str.length-1)
+   return reversed+reversion_int(nums_str.substring(0,nums_str.length-1))
  }
- //reversion_int().reversion_int().reversion_int()....reversion_int()
- //结束条件就是
 
-
- 
-// function reversion_int(nums){
-//   let str = nums+''
-//   return str.length == 1 ?nums :str.substring(str.length-1)+reversion_int(str.substring(0,str.length-1))
-//  }
-
-//  console.log(reversion_int(3456))
-
-function reverse(nums){
-  let nums_str = nums+'';
-  // if(str.length == 1) return nums;
-
-  //反转最后一位到未操作过的原始字符串的头部,这就是当前递归需要做的
-  let tail = nums_str.substring(nums_str.length-1)
-  let curStr = reverse(nums_str.substring(0,nums_str.length-1))
-
-  return tail+curStr//返回的是处理好的当前层
-}
+let changed = reversion_int(1234)
