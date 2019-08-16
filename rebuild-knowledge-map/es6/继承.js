@@ -55,14 +55,21 @@
       this.val = value
     }
     Parent.prototype.getValue = function () {
-      console.log(this.val)
+      console.log(`origin type:${this.val}`)
     }
 
     function Child(value) {
       Parent.call(this, value)
     }
+    //表达式的意思是 将Child的原型对象设置为Parent的原型对象副本，并修改这个副本的Constructor为Child
 
-    Child.prototype = Object.create(Parent.prototype, {//object.create方法
+    /******
+     * version1:重写父类方法
+     * changed! 1 
+     * origin type:2
+     * ********* */
+
+    Child.prototype = Object.create(Parent.prototype, {//object.create方法 创造一个原型对象为Parent.prototype的新对象，并且这个对象的构造函数为Child。
       constructor: {
         value: Child,
         enumerable: false,
@@ -71,10 +78,25 @@
       }
     })
 
-    const child = new Child(1)
+    //version 2 ：覆盖父类方法
+    //=> changed! 1 changed! 2  
+    // Child.prototype = Parent.prototype
 
+    /**
+     * version3：重写父类方法，
+     * changed! 1 
+     * origin type:2 
+     */
+    // Child.prototype = Object.create(Parent.prototype)//child的原型对象没有constructor属性
+
+
+    Child.prototype.getValue = function(){
+      console.log(`changed!${this.val}`)
+    }
+    const child = new Child(1)
     child.getValue() // 1
-    console.log(child instanceof Parent) // true
+    const father = new Parent(2)
+    father.getValue()
 
   }
 
