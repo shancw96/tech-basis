@@ -17,7 +17,7 @@ let tempCook = cooking('noodle')
 let tempCook2 = tempCook('salt')
 let finalCook = tempCook2('meat')
 /***************** same as *************** */
-cooking('noodle')('salt')('meat')
+// cooking('noodle')('salt')('meat')
 
 
 //functional JS is composeble

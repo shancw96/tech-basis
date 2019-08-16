@@ -2,13 +2,6 @@
 // 构造函数Mypromise 
 // 在异步没有成功之前返回Promise { pending }
 // 在成功之后通过.then 调用 返回异步值
-
-
-
-
-
-//一开始 `Promise` 的状态应该是 `pending`
-//value` 变量用于保存 `resolve` 或者 `reject` 中传入的值
 const PENDING = 'pending';
 const RESOLVED = 'resolved';
 const REJECT = 'rejected';
@@ -44,7 +37,7 @@ function reject(value) {
   this.value = value;
   this.rejectedCallbacks.map(cb => cb(this.value))
 }
-/***********then实现********** */
+/***********then实现（对回调函数进行执行，如果当前状态是pending则将回调函数入栈）********** */
 MyPromise.prototype.then = function (onFulfilled, onRejected) {
   onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : v => v
   onRejected = typeof onRejected === 'function' ? onRejected :r => {throw r}
@@ -58,13 +51,6 @@ MyPromise.prototype.then = function (onFulfilled, onRejected) {
     case REJECT : onRejected(this.value);break;
   }
 }
-
-
-
-
-
-
-
 
 function delay(ms) {
   return new MyPromise((resolved, reject) => {
