@@ -18,5 +18,5 @@ function bubbleSort(arr){ //O(n^n)
 }
 
 let res = bubbleSort(arr)
-console.log(arr)
+// console.log(arr)
 console.log(res)
