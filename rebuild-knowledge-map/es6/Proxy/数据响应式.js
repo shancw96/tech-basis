@@ -1,7 +1,8 @@
 let onWatch = (obj, getLogger,listenBind) => {
   let handler = {
     get(target, property, receiver) {//目标对象、属性名和 proxy 实例本身
-      getLogger(property)
+      // getLogger(property)
+      console.log(property)
       return Reflect.get(target, property, receiver)
     },
     set(target, name, value, receiver) {
@@ -17,5 +18,6 @@ let proxy_arr = onWatch(obj,
   (name, value) => console.log(`listen set ${name}:${value}`)
 );
 
+proxy_arr.a
 proxy_arr.a = 2
 
