@@ -17,8 +17,9 @@ var preorderTraversal = function(root,arr = []) {
   return arr
 };
 
+//先序遍历是优先遍历左节点，左节点结束，再选择父节点的右节点，重复遍历左节点的过程
 
-var preorderTraversal = function(root,arr = []) {
+var preorderTraversal = function(root) {
   let res = []
   let stack = []
   while(root || stack.length){
