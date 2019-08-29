@@ -1,48 +1,25 @@
-
-function ListNode(val) {
-  this.val = val;
-  this.next = null;
-}
-let head = new ListNode(1)
-let move_p = head
-move_p.next = new ListNode(1)
-move_p = move_p.next
-move_p.next = new ListNode(2)
-move_p = move_p.next
-move_p.next = new ListNode(2)
-move_p = move_p.next
-move_p.next = new ListNode(4)
-
 var deleteDuplicates = function(head) {
-  let prev = new ListNode(null)
-  prev.next = head;
-  let target = head;
-  while(target.next && target.val == target.next.val){
-    target = moveToLast(target)
-    head = target.next
-    if(!head) return head
-    target = head
-  
-  }
-  while(target && target.next){
-    if(target.val == target.next.val){
-      target = moveToLast(target)
-      prev.next = target.next;
-      target = prev.next
+  let dummy = new ListNode(null)
+  //解决不修改head会报错的问题
+  dummy.next = head;
+  let fast = dummy.next;
+  let slow = dummy
+  //
+  while(fast && fast.next){
+    if(fast.val == fast.next.val){
+      fast = moveToLast(fast)
+      slow.next = fast.next;
     }else{
-      prev = prev.next;
-      target = target.next
+      slow = slow.next
     }
+    fast = fast.next
   }
-  return head
+  return dummy.next
 };
-function moveToLast(target){
-  // if(!target.next) return target
-  while(target.next && target.val == target.next.val ){
-      target = target.next
+function moveToLast(fast){
+  // if(!fast.next) return fast
+  while(fast.next && fast.val == fast.next.val ){
+      fast = fast.next
   }
-  return target
+  return fast
 }
-
-let res = deleteDuplicates(head)
-res
