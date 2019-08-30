@@ -65,11 +65,12 @@
       <footer id="footer">footer</footer>
     </div>
     <script>
-      document.querySelector('ul').addEventListener('click',e=>{
-        e.preventDefault();
-        console.log(e.target.getAttribute('href'))
+      var i=0
+      var table = document.querySelectorAll("td[id^='A']")
+      table.forEach(function(item){
+        alert('code in ')
+        item.getAttribute('row') ? item.innerHTML = i++ : alert('could not find table')
       })
-      
     </script>
   </body>
 </html>
