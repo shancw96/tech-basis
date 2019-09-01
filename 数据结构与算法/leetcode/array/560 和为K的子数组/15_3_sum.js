@@ -1,41 +1,26 @@
 var threeSum = function (nums) {
   let ans = []
   //两层循环
-  let sortedNums = nums.sort((a,b)=>!!(a>b))
-  sortedNums.some((first,index)=>{
-    if(first>0) return true
-    let restNums = sortedNums.slice(index+1)
-    if(restNums.length>1 && first !== sortedNums[index-1]){
-      let curAns = getSumList(first,restNums)
-      curAns.forEach(singleAns=>{
-        ans.push(singleAns)
-      })
+
+  if(nums == null || nums.length<3) return ans
+  nums.sort((a,b)=>a-b)
+  for(let i=0 ;i<nums.length;i++){
+    if(nums[i]>0) break
+    if(i>0 && nums[i] === nums[i-1]) continue
+    let L = i+1
+    let R = nums.length-1
+    while(L<R){
+      let sum = nums[i] + nums[L] + nums[R]
+      if(sum==0){
+        ans.push([nums[i],nums[L],nums[R]])
+        while (L<R && nums[L] == nums[L+1]) L++; 
+        while (L<R && nums[R] == nums[R-1]) R--; // 去重
+        L++;
+        R--;
+      }
+      else if (sum < 0) L++;
+      else if (sum > 0) R--;
     }
-
-    ans
-  })
-};
-
-function getSumList(first,restNums){
-  let ans = []
-  let second = 0;
-  let third = restNums.length-1
-  while(second<third){
-    let sum = first + restNums[second] + restNums[third]
-    if(sum==0) {
-      ans.push([first,restNums[second],restNums[third]])
-      while (second<third && restNums[second] == restNums[second+1]) second++; // 去重
-      while (second<third && restNums[third] == restNums[third-1]) third--; // 去重
-      second += 1
-      third -= 1
-    }
-    if(sum<0) second +=1;
-    if(sum>0) third -= 1;
-
-    // return 
   }
-
   return ans
 }
-
-threeSum([-1, 0, 1, 2, -1, -4,5])
