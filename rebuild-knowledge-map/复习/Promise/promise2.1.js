@@ -98,6 +98,7 @@ class MyPromise {
               res.then(onFulfilledNext, onRejectedNext)
             } else {
               //否则会将返回结果直接作为参数，传入下一个then的回调函数，并立即执行下一个then的回调函数
+              console.log(onFulfilledNext)
               onFulfilledNext(res)
             }
           }
@@ -149,6 +150,7 @@ let testDelay = new MyPromise((resolved,rejected)=>{
     resolved('done')//_resolved 27行执行，改变当前状态为FULFILLED，在去执行回调队列，发现为空，结束
   },0)
 })
-testDelay.then(res=>{//onfulfilled = console.log(res) 先执行res然后在将其值
-  console.log(res)
+let res = testDelay.then('1').then(()=>{
+  console.log('triggle')
 })
+
