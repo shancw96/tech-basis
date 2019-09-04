@@ -1,10 +1,9 @@
-var maxSubArray = function (nums,curPos = nums.length-1) {
-  if (nums.length == 1) return nums[0]
-  let ans = nums[0]
-  let preNums = nums.slice(0, nums.length - 1)
-  let preMax = maxSubArray(preNums,--curPos)
-  ans = Math.max(preMax, preMax + nums[i])
+var maxSubArray = function(nums) {
+  let subMax = [nums[0]]
+  let ans = nums[0]  
+  for(let i = 0 ;i < nums.length-1;i++){
+      subMax[i+1] = Math.max(subMax[i]+nums[i+1],nums[i+1])
+      ans = Math.max(ans,subMax[i+1])
+  }
   return ans
 };
-let ans = maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4])
-console.log(ans)
