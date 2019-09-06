@@ -26,3 +26,5 @@ var lengthOfLongestSubstring = function (s) {
 };
 
 let ans = lengthOfLongestSubstring('qwfdved')
+console.log(ans)
+

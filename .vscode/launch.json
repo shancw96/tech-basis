@@ -8,7 +8,8 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/数据结构与算法/数组/3无重复的最长字串.js"
+      // "program": "${workspaceFolder}/数据结构与算法/数组/3无重复的最长字串.js"
+      "program": "${file}"
     }
   ]
 }
