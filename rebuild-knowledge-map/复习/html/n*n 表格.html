@@ -13,69 +13,71 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
     <style>
-      #dynamic{
-        table-layout:fixed;
+      #dynamic {
+        table-layout: fixed;
         width: 200px;
       }
-      #dynamic td{ height:30px; border:#CCCCCC 1px solid;}
-      .bgBlue{
-        background:aqua !important;
+      #dynamic td {
+        height: 30px;
+        border: #cccccc 1px solid;
       }
-      .bgPink{
-        background-color: palevioletred
+      .bgBlue {
+        background: aqua !important;
+      }
+      .bgPink {
+        background-color: palevioletred;
       }
     </style>
   </head>
   <body>
     <section>
       <!-- 默认值怎么设置 -->
-      <input type="text" id = "createTable" onblur="createTable()">
+      <input type="text" id="createTable" onblur="createTable()" />
     </section>
   </body>
   <script>
-    
-    function createTable(){
+    function createTable() {
       //去除重复
-      let prev = document.querySelector('#dynamic') || null
-      prev ? document.body.removeChild(prev) : ''
+      let prev = document.querySelector("#dynamic") || null;
+      prev ? document.body.removeChild(prev) : "";
 
-      let n = +document.querySelector('#createTable').value
-      let str = '<tbody>'
-      for(let i=0;i<n;i++){
-        str += `<tr>`
-        for(let j=0;j<n;j++){
-          str += `<td></td>`
+      let n = +document.querySelector("#createTable").value;
+      let str = "<tbody>";
+      for (let i = 0; i < n; i++) {
+        str += `<tr>`;
+        for (let j = 0; j < n; j++) {
+          str += `<td></td>`;
         }
-        str += `</tr>`
+        str += `</tr>`;
       }
-      str +=`</tbody>`
+      str += `</tbody>`;
 
-      let table = document.createElement('table')
-      table.innerHTML = str
+      let table = document.createElement("table");
+      table.innerHTML = str;
       //设置id，用来去除重复
-      table.setAttribute('id','dynamic')
+      table.setAttribute("id", "dynamic");
 
-      table.setAttribute("cellspacing", 0);//消除表格间的间距
+      table.setAttribute("cellspacing", 0); //消除表格间的间距
 
-      document.body.appendChild(table)
+      document.body.appendChild(table);
 
-      changeColor(table)
+      changeColor(table);
     }
-    function changeColor(table){
-      table.addEventListener('click',e=>{
-        let curNodeClass = e.target.classList
-        curNodeClass.contains('bgBlue') ? e.target.classList.remove('bgBlue') :e.target.classList.add('bgBlue')
-      })
-      table.addEventListener('mouseover',e=>{
-        console.log(e.target)
-        e.target.classList.add('bgPink')
-      })
-      table.addEventListener('mouseout',e=>{
-        console.log('triggle')
-        e.target.classList.remove('bgPink')
-      })
+    function changeColor(table) {
+      table.addEventListener("click", e => {
+        let curNodeClass = e.target.classList;
+        curNodeClass.contains("bgBlue")
+          ? e.target.classList.remove("bgBlue")
+          : e.target.classList.add("bgBlue");
+      });
+      table.addEventListener("mouseover", e => {
+        console.log(e.target);
+        e.target.classList.add("bgPink");
+      });
+      table.addEventListener("mouseout", e => {
+        console.log("triggle");
+        e.target.classList.remove("bgPink");
+      });
     }
-
-
   </script>
 </html>
