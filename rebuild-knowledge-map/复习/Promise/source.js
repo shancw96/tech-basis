@@ -203,5 +203,5 @@
       resolved('done')//_resolved 27行执行，改变当前状态为FULFILLED，在去执行回调队列，发现为空，结束
     },0)
   })
-  let res = testDelay.then('skip it').then('skip it' ).then(res=>console.log(res))
+  let res = testDelay.then(res=>console.log(res))
   
