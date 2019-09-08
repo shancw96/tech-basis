@@ -1,23 +1,25 @@
-var twoSum = function(nums, target) {
-  let hash = {};
-  let result = []
-  for(let index in nums){
-      hash[target - nums[index]] = nums[index]
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function (nums, target) {
+  nums.sort((a, b) => a - b)
+  const ans = []
+  let L = 0
+  let R = nums.length - 1
+  while (L < R) {
+    let sum =nums[L] + nums[R]
+    if (sum === target) {
+      ans.push([nums[L], nums[R]])
+      while (L < R && nums[R] == nums[R - 1]) R -= 1 //重复值，不需要重复计算
+      while (L < R && nums[L] == nums[L + 1]) L += 1
+      R -= 1
+      L += 1
+    } else sum > 0 ? R -= 1 : L += 1
   }
-  for(let index = 0;index<nums.length ;index++){
-      if(hash[nums[index]] !== undefined){
-          console.log(hash[nums[index]])
-          //对 减数 相同的情况进行判断
-          if(nums[index]==3 && !isOnly(nums,nums[index])){
-              continue
-          }
-          result.push(index)
-      }
-  }
-  return result
-}
+  return ans
+};
 
-var isOnly = function(arr,target){
-  return arr.filter(num=>target == num).length <=1? false:true
-}
-twoSum([3,2,4],6)
+let ans = twoSum([1, 1, 1, 1,0,2], 2)
+console.log(ans)
