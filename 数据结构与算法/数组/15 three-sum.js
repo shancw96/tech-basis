@@ -11,7 +11,7 @@ var threeSum = function (nums) {
       resArr.length ?ans = [...ans,...resArr.map(arr=>[item,...arr])] : ''
     }
   })
-  return [...ans]
+  return ans
 };
 
 var twoSum = function (nums, target) {
@@ -26,11 +26,11 @@ var twoSum = function (nums, target) {
       while (L < R && nums[L] == nums[L + 1]) L += 1
       R -= 1
       L += 1
-    } else sum > 0 ? R -= 1 : L += 1
+    } else sum > target ? R -= 1 : L += 1
   }
   return ans
 };
 
-let ans = threeSum([0,-4,-1,-4,-2,-3,2])
+let ans = threeSum([-1, 0, 1, 2, -1, -4])
 
-console.log(ans)
+console.log(ans.forEach(arr=>console.log(arr)))
