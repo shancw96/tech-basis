@@ -32,6 +32,3 @@ function twoSum(nums,target){
   }
   return ans
 }
-
-let ans = calculateN([1, 0, -1, 0, -2, 2])
-console.log(ans.length)
