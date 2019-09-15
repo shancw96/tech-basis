@@ -5,7 +5,7 @@ let _jsonp = function(url,data,callback){
   let dataString = Object.keys(data).reduce((prev,key)=>prev+=`${key}=${data[key]}&`,url.indexOf('?') == -1 ? '?' : '&')
   // 2 处理url中的回调函数
   let cbFn = 'my_jsonp' + Math.random().toString().replace('.','');
-  dataString += 'callback' + cbFn
+  dataString += 'callback=' + cbFn
   // 3.创建一个script标签并插入到页面中
   let scriptElm = document.createElement('script')
   console.log(url+dataString)
