@@ -25,7 +25,7 @@ router.post('/api/login',ctx=>{
 router.post('/api/post',ctx=>{
     const barerHeader = ctx.request.header['autuorization']
     if(!barerHeader ){
-        ctx.response.status = 400
+        ctx.response.status = 400 
      }
     else{
         //存在Authorization

@@ -99,7 +99,8 @@ class MyPromise {
                         res.then(onFulfilledNext, onRejectedNext)
                     } else {
                         //否则会将返回结果直接作为参数，传入下一个then的回调函数，并立即执行下一个then的回调函数
-                        onFulfilledNext(res)
+                        let ans = onFulfilledNext(res)
+                        console.log(onFulfilledNext)
                     }
 
                 } catch (err) {
