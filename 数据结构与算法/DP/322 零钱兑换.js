@@ -45,6 +45,7 @@ var coinChange_dp = function (coins, amount) {
             if(coin > i) continue
             dp[i] = Math.min(dp[i],dp[i-coin]+1) 
             /**
+             *  f(n) 只与 f(n-1),f(n-2),f(n-5) 相关
              * 当 money = 15 时候
              * 取 1 ： cost = cost(14) + 1
              * 取 2 : cost = cost(13) + 1
@@ -53,10 +54,11 @@ var coinChange_dp = function (coins, amount) {
              * 我们应该选取花费最小的一个
              * cost = min(cost(14),cost(13),cost(10))+1
              * 
-             * for loop解决上述
+             * for loop 实现上述思路
              * for(let coin of coins){
-             *      dp[cost] = Math.min(dp[cost],dp[cost-coin]+1)   Math.min(...)中的dp[cost]表示48行的三种情况
+             *      cost = Math.min(cost,dp[cost-coin]+1)   Math.min(...)中的cost表示48行的三种情况
              * }
+             * dp[i] = cost
              */
         }
     }
