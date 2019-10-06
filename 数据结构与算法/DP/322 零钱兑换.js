@@ -38,31 +38,26 @@ var coinChange = function (coins, amount, memo = {}) {
     return memo[amount] = resNum === Infinity ? -1 : resNum
 };
 var coinChange_dp = function (coins, amount) { 
-    let dp = []
-    dp[0] = 0 ;//amount = 0 res = 0
-    for (let i = 1; i < amount ;i++) {
-        for(let coin of coins){ //面额
-            if(coin > i) continue
-            dp[i] = Math.min(dp[i],dp[i-coin]+1) 
-            /**
-             *  f(n) 只与 f(n-1),f(n-2),f(n-5) 相关
-             * 当 money = 15 时候
-             * 取 1 ： cost = cost(14) + 1
-             * 取 2 : cost = cost(13) + 1
-             * 取 5 : cost = cost(10) + 1
-             * 
-             * 我们应该选取花费最小的一个
-             * cost = min(cost(14),cost(13),cost(10))+1
-             * 
-             * for loop 实现上述思路
-             * for(let coin of coins){
-             *      cost = Math.min(cost,dp[cost-coin]+1)   Math.min(...)中的cost表示48行的三种情况
-             * }
-             * dp[i] = cost
-             */
+    //dp[i] 表示组成i块钱，需要的最少的硬币数量
+    //第J个硬币我可以选择不拿，也可以选择哪
+    //不拿dp[i] = dp[i]
+    //拿dp[i] = dp[i-coin[j]] + 1
+
+    if (amount === 0) {
+        return 0;
+      }
+    //   const dp = Array(amount + 1).fill(Number.MAX_VALUE)
+     let dp = [...Array(amount+1)].map(_=>Number.MAX_VALUE)
+      dp[0] = 0;
+      for (let i = 1; i <=amount; i++) {
+        for (let j = 0; j < coins.length; j++) {
+          if (i - coins[j] >= 0) {
+            dp[i] = Math.min(dp[i], dp[i - coins[j]] + 1);
+          }
         }
-    }
-    // return memo[amount] = resNum === Infinity ? -1 : resNum
+      }
+  
+      return dp[dp.length - 1] === Number.MAX_VALUE ? -1 : dp[dp.length - 1];
 };
-let ans = coinChange([1, 2, 5], 100)
+let ans = coinChange_dp([1, 2, 5], 100)
 console.log(ans)
