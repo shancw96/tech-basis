@@ -69,7 +69,7 @@ myPromise.prototype.then = function (onFulfilled, onRejected) {
                     let x = onFulfilled(self.value);//执行then中的函数,参数为上一册resolve 传递的值 
                     //对x进行判断 
                     //是一个promise 那么等待这个promise执行完毕才能执行下面的
-                    //普通值，执行当前promise 的resolve。 将状态变为fuifilled 并且将参数进行传递
+                    //普通值，执行当前promise 的resolve。 将状态变为fuifilled 并且将参数进行传递.这一步是为了链式调用，如果不进行resolve 那么下一个then 执行的时候判断的就是pending，也就是说then 携带的函数并不会被执行，而是压入栈中，等待状态改变
                     resolvemyPromise(myPromise2, x, resolve, reject);//对结果进行判断，如果是新的myPromise 那么等待执行完毕，不是myPromise就直接resolve
                     console.log('debugger : resolved status is :'+this.status)
                 } catch (e) {
@@ -166,4 +166,7 @@ function foo(num){
 
 foo(100).then(res=>{
     console.log('get then answser :'+res)
+    return res+10
+}).then(res=>{
+    console.log(res)
 })
