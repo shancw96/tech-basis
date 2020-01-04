@@ -19,11 +19,12 @@ function MyPromise() {
         this.handlers.forEach(handle); //等待传入handle 函数
         this.handlers = [];
     }
-    //判断value的值：promise 或者plain value
+    //判断value的值：promise 或者plain value ,如果是promise 则获取他的then方法，进行执行
+    // 总结：resolve 会将promise递归获取到then方法，然后执行fulfilled
     function resolve(value) {
         try {
             let then = getThen(value);
-            !!then ? doResolve(then.bind(this), fulfilled, rejected) : fulfilled(value);
+            !!then ? doResolve(then.bind(value), resolve, rejected) : fulfilled(value);
         } catch (e) {
             rejected(e);
         }
@@ -83,7 +84,7 @@ function MyPromise() {
         }
     }
 
-    doResolve(fn.fulfilled, rejected);
+    doResolve(fn, resolve, rejected);
 }
 
 function getThen(value) {
@@ -96,14 +97,14 @@ function getThen(value) {
     return null;
 }
 
-//执行resolve
+//执行resolve 只执行一次，递归调用原因
 function doResolve(fn, onFulfilled, onRejected) {
     let hasDone = false;
     try {
         fn(
             value => {
                 if (hasDone) return;
-                onFulfilled(value);
+                onFulfilled(value); //resolve 递归调用
                 hasDone = true;
             },
             reason => {
