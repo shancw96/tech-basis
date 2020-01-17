@@ -68,6 +68,24 @@ class MyPromise {
             }
         });
     }
+    /**
+     * 
+     promise
+        .finally(() => {
+            «statements»
+        });
+    promise
+        .then(
+            result => {
+                «statements»
+                return result;
+            },
+            error => {
+                «statements»
+                throw error;
+            }
+        );
+     */
     finally(handle) {
         return this.then(
             res => MyPromise.resolve(handle()).then(() => res),
