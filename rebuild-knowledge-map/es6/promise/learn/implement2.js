@@ -7,7 +7,7 @@ const REJECTED = "REJECTED";
 class MyPromise {
     constructor(handle) {
         if (!isFunction(handle)) {
-            throw new Error("MyPromsie must accept a function");
+            throw new Error("myPromise must accept a function");
         }
         this._status = PENDING;
         this._value = null;
