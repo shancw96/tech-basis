@@ -1,118 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <title>Document</title>
-  </head>
-  <body>
-    <div id="app">
-      <div>
-        <input type="file" @change="handleFileChange" />
-        <button @click="handleFileUpload">click to upload</button>
-      </div>
-    </div>
-  </body>
-  <script>
-    //request methods
-    const request = ({
-      url,
-      method = "post",
-      data,
-      headers = {},
-      requestList
-    }) =>
-      new Promise(resolve => {
-        const xhr = new XMLHttpRequest();
-        //ajax open
-        xhr.open(method, url);
-        //set header
-        Object.keys(headers).forEach(key => {
-          xhr.setRequestHeader(key, headers[key]);
-        });
-        //send file
-        xhr.send(data);
-        //receive data
-        xhr.onload = e => {
-          resolve({
-            data: e.target.response
-          });
-        };
-      });
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="app">
+            <div>
+                <input type="file" @change="handleFileChange" />
+                <button @click="handleFileUpload">click to upload</button>
+            </div>
+        </div>
+    </body>
+    <script>
+        //request methods
+        const request = ({ url, method = "post", data, headers = {}, requestList }) =>
+            new Promise(resolve => {
+                const xhr = new XMLHttpRequest();
+                //ajax open
+                xhr.open(method, url);
+                //set header
+                Object.keys(headers).forEach(key => {
+                    xhr.setRequestHeader(key, headers[key]);
+                });
+                //send file
+                xhr.send(data);
+                //receive data
+                xhr.onload = e => {
+                    resolve({
+                        data: e.target.response
+                    });
+                };
+            });
 
-    new Vue({
-      el: "#app",
-      data: {
-        file: null,
-        dataList: []
-      },
-      methods: {
-        //slice file
-        createFileThunk(file, length = 10) {
-          const fileChunkList = [];
-          const chunkSize = Math.ceil(file.size / length);
-
-          let cur = 0;
-          while (cur < file.size) {
-            fileChunkList.push({ file: file.slice(cur, cur + chunkSize) });
-            cur += chunkSize;
-          }
-
-          return fileChunkList;
-        },
-
-        handleFileChange(e) {
-          const [file] = e.target.files;
-          if (!file) return;
-
-          this.file = file;
-          console.log(this.file.size);
-        },
-        async handleFileUpload() {
-          if (!this.file) return;
-          const fileChunkList = this.createFileThunk(this.file); //[{file:Blob}]  Blob-->slice,stream,text,type
-          console.log(fileChunkList);
-          this.dataList = fileChunkList.map(({ file }, index) => ({
-            chunk: file,
-            hash: this.file.name + "-" + index
-          }));
-          console.log(this.dataList);
-          //create file promise
-          //1. create formdata list
-          const formDataList = this.dataList.map(({ chunk, hash }) => {
-            const formdata = new FormData();
-            formdata.append("chunk", chunk);
-            formdata.append("hash", hash);
-            formdata.append("fileName", this.file.name);
-            return formdata;
-          });
-          //2. create request
-          const requestList = formDataList.map(formdata =>
-            request({
-              url: "http://localhost:4007/uploadChunk",
-              data: formdata
-            })
-          );
-
-          await Promise.all(requestList);
-
-          //alert server merge chunk
-          await this.alertMergeChunk();
-        },
-        async alertMergeChunk() {
-          await this.request({
-            url: "http://localhost:4007/mergeChunk",
-            headers: {
-              "content-type": "application/json"
+        new Vue({
+            el: "#app",
+            data: {
+                file: null,
+                dataList: []
             },
-            data: JSON.stringify({
-              fileName: this.file.name
-            })
-          });
-        }
-      }
-    });
-  </script>
+            methods: {
+                //slice file
+                createFileThunk(file, length = 10) {
+                    const fileChunkList = [];
+                    const chunkSize = Math.ceil(file.size / length);
+
+                    let cur = 0;
+                    while (cur < file.size) {
+                        fileChunkList.push({ file: file.slice(cur, cur + chunkSize) });
+                        cur += chunkSize;
+                    }
+
+                    return fileChunkList;
+                },
+
+                handleFileChange(e) {
+                    const [file] = e.target.files;
+                    if (!file) return;
+
+                    this.file = file;
+                    console.log(this.file.size);
+                },
+                async handleFileUpload() {
+                    if (!this.file) return;
+                    const fileChunkList = this.createFileThunk(this.file); //[{file:Blob}]  Blob-->slice,stream,text,type
+                    console.log(fileChunkList);
+                    this.dataList = fileChunkList.map(({ file }, index) => ({
+                        chunk: file,
+                        hash: this.file.name + "-" + index
+                    }));
+                    console.log(this.dataList);
+                    //create file promise
+                    //1. create formdata list
+                    const formDataList = this.dataList.map(({ chunk, hash }) => {
+                        const formdata = new FormData();
+                        formdata.append("chunk", chunk);
+                        formdata.append("hash", hash);
+                        formdata.append("fileName", this.file.name);
+                        return formdata;
+                    });
+                    //2. create request
+                    const requestList = formDataList.map(formdata =>
+                        request({
+                            url: "http://localhost:4007/uploadChunk",
+                            data: formdata
+                        })
+                    );
+
+                    await Promise.all(requestList);
+
+                    //alert server merge chunk
+                    await this.alertMergeChunk();
+                },
+                async alertMergeChunk() {
+                    await request({
+                        url: "http://localhost:4007/mergeChunk",
+                        headers: {
+                            "content-type": "application/json"
+                        },
+                        data: JSON.stringify({
+                            fileName: this.file.name
+                        })
+                    });
+                }
+            }
+        });
+    </script>
 </html>
