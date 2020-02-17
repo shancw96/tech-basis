@@ -35,23 +35,40 @@ function buyCountDown() {
         }, 1)
     }, 1)
 }
-//监听设置事件
+
+
+//监听popup设置事件
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-        if (request.kind !== 'addTimer') return
-        if (!!request.deadTime) {
-            const deadTime = new Date(request.deadTime.replace(/-/g, "/"))
-            //判断网页是否有效
-            if (window.location.href.match(/([a-zA-Z]+\.)/g)[0] === 'cart.') {
-                cartCountDown(deadTime)
-                sendResponse({ farewell: "设置成功" });
-            } else {
-                sendResponse({ farewell: '无效的网页,请前往taobao购物车页面进行操作！' })
-            }
+        if (request.kind === 'addTimer') {
+            if (!!request.msg) {
+                const deadTime = new Date(request.msg.replace(/-/g, "/"))
+                //判断网页是否有效
+                if (window.location.href.match(/([a-zA-Z]+\.)/g)[0] === 'cart.') {
+                    cartCountDown(deadTime)
+                    // sendResponse({ farewell: "设置成功" });
+                    //给bg 发送信息 开始ajax 请求
+                    chrome.runtime.sendMessage({ msg: 'contentScript->Bg' }, response => {
+                        //使用淘宝时间戳
+                        console.log('taobao tim')
+                        alert(response)
+                    })
+                } else {
+                    sendResponse({ farewell: '无效的网页,请前往taobao购物车页面进行操作！' })
+                    chrome.runtime.sendMessage({ msg: 'contentScript->Bg' }, response => {
+                        //使用淘宝时间戳
+                        console.log('taobao time')
+                        alert(response)
+                    })
+                }
 
-        } else {
-            sendResponse({ farewell: '请输入数据！！！' })
+            } else {
+                sendResponse({ farewell: '请输入数据！！！' })
+            }
         }
+
     });
+
 //进入新网页需要进行判断是否为订单页面
 buyCountDown()
+

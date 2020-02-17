@@ -1,28 +1,25 @@
 {
-    "name": "TB_order_killer",
-    "description": "加入购物车，选中，自动抢单~",
-    "version": "0.0.1",
+    "name": "taobao 秒杀插件",
+    "description": "",
+    "version": "0.0.2",
     "icons": {
         "16": "image/seckill-16.png",
         "48": "image/seckill-48.png",
         "128": "image/seckill-128.png"
     },
     "permissions": [
+        "storage",
         "tabs",
-        "notifications",
         "activeTab",
         "webRequest",
         "webRequestBlocking",
-        "cookies",
         "http://*/*",
-        "https://*/*",
-        "http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp",
-        "history"
+        "https://*/*"
     ],
     "background": {
         "scripts": [
             "lib/jquery.js",
-            "js/backgroundScript/redirect.js"
+            "background.js"
         ],
         "persistent": true
     },
@@ -33,8 +30,8 @@
                 "https://*/*"
             ],
             "js": [
-                "js/contentScript/locate.js",
-                "js/contentScript/autoTriggle.js"
+                "lib/utils.js",
+                "content.js"
             ]
         }
     ],
@@ -43,9 +40,5 @@
         "default_popup": "index.html",
         "default_icon": "image/seckill-16.png"
     },
-    "content_security_policy": "script-src 'self' 'unsafe-eval' https://limiaomiao.site/; object-src 'self'",
-    "web_accessible_resources": [
-        "lib/*.js",
-        "js/*.js"
-    ]
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }
