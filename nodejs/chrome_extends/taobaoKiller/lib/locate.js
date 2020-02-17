@@ -1,7 +1,7 @@
 /**
  * 获取当前节点的所有父节点
  * @param {HTMLDOM} node 节点
- * @param {Array} resArr 结果数组
+ * @param {Array} resArr 结果数组---
  */
 const getAllParentNode = (node, resArr = []) => node.tagName === 'BODY' ? resArr : getAllParentNode(node.parentNode, [node, ...resArr])
 /**
