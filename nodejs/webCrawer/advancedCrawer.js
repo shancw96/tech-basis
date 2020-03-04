@@ -1,6 +1,9 @@
 const {
     curry
 } = require("ramda");
+const {
+    transferGbkToBuffer
+} = require('./utils')
 const Formdata = require("form-data");
 const axios = require("axios");
 const cheerio = require("cheerio");
@@ -25,10 +28,8 @@ const asyncPostSearch = curry(async (fn, url, keyword) => {
 })
 
 const filterSearch = $ => {
-    return {
-        testTitle: $('body').children('div').eq(0).children('div').eq(0).children('div').eq(0).children('div').eq(1).children('table').eq(0).children('tbody').eq(0).children('tr').eq(1).children('td').eq(1).children('p').eq(0).children('a').eq(0).text(),
-        testUpdate: $('body').children('div').eq(0).children('div').eq(0).children('div').eq(0).children('div').eq(1).children('table').eq(0).children('tbody').eq(0).children('tr').eq(1).children('td').eq(3).children('p').eq(0).text()
-    }
+
 }
 
-asyncPostSearch(filterSearch, baseURL + searchURL, '遮天').then(res => console.log(res))
+// asyncPostSearch(filterSearch, baseURL + searchURL, '遮天').then(res => console.log(res))
+console.log(transferGbkToBuffer('123'))
