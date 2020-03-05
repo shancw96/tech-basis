@@ -1,6 +1,13 @@
+const board = [
+    ["A","B","C","E"],
+    ["S","F","E","S"],
+    ["A","D","E","E"]
+]
+
+const word ="ABCESEEEFS"
+console.log(exist(board, word))
 
 function exist(board, word) {
-
 
     curPosList = findTargetPosList(board, word[0])
     return curPosList.findIndex(pos=>{
@@ -9,17 +16,16 @@ function exist(board, word) {
         // console.log(res)
         return res
     }) !== -1
-    
 
     //使用isExist 是为了 lock 在重新开始的时候会执行重置
     function isExist(board, word, pos,lock = {}){
         // lock[`${pos.row}:${pos.col}`] = true
         lock = {...lock,[`${pos.row}:${pos.col}`]:true}
+        if(word.length === 1) return true
         const nextPosList = getNextCharPosList(board, word, pos,lock).filter(isNotEmpty)
-        if(!nextPosList.length) {
-            
-            return word.length === 1 ? true : false
-        }
+        // console.log(nextPosList)
+        // console.log(nextPosList)/
+        if(!nextPosList.length) return false
         return nextPosList.findIndex(pos=>isExist(board,word.slice(1),pos,lock)) !== -1
     }
 };
@@ -72,4 +78,3 @@ function findTargetPosList(matrix, target) {
         return isNotEmpty(curRowResult) ? res.concat(curRowResult) : res
     }, [])
 }
-
