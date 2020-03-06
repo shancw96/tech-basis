@@ -5,15 +5,17 @@ const get = (target, key, receiver) => {
     //只在effect 初始化的时候执行
     track(target, key, 'GET')
     //由于 proxy只能代理一层，所以通过懒加载的方式来代理嵌套的对象
-    return isObject(value) ? reactive(value) : value
+    return isObject(target[key]) ? reactive(target[key]) : value
 
 }
 
 const set = (target, key, value, receiver) => {
+    // console.log(`set trap raw target type ${Object.prototype.toString.call(target)}\n key is :${key}`)
     const oldVal = target[key]
     const res = Reflect.set(target, key, value, receiver)
 
     if (oldVal !== value) {
+        console.log(receiver)
         triggle(target, key, 'SET')
     }
     return res
@@ -73,7 +75,8 @@ const track = (target, key, type) => {
 }
 
 const triggle = (target, key, type) => {
-    console.log(key)
+    // console.log(key)
+    // console.log(targetMap)
     let depsMap = targetMap.get(target)
     if (!depsMap) {
         return //这个target 不是响应式的
@@ -87,18 +90,10 @@ const reactive = target => {
     const proxy_target = new Proxy(target, baseHandler)
     return proxy_target
 }
-const isObject = obj => Object.prototype.toString.call(obj) === '[object Object]'
+const isObject = obj => typeof obj === 'object'
 
 
-
-const state = reactive({
-    test: [1, 2, 3]
-})
+const arr = reactive([{test:1}])
 effect(() => {
-    let dummy = state.test
-    console.log(dummy)
+    console.log(arr[0])
 })
-
-// state.newKey = 1
-state.test.push(1)
-// console.log(state.test)
