@@ -6,10 +6,10 @@ function createLimitPromise(limitNum, promiseList) {
   return new Promise(resolve => {
     const runTime = promiseList.length;
     for (let i = 0; i < runTime; i++) {
-      run();
+      run([...promiseList]);
     }
 
-    function run() {
+    function run(promiseList) {
       if (handling < limitNum && promiseList.length) {
         handling += 1;
         handle(promiseList.shift())
@@ -25,7 +25,7 @@ function createLimitPromise(limitNum, promiseList) {
             resolvedNum += 1;
             console.log(`resolvedNum : ${resolvedNum}`);
             if (resolvedNum === runTime) resolve(resArr);
-            run(promiseList, limitNum);
+            run(promiseList);
           });
       }
     }
@@ -61,7 +61,7 @@ function getElFile(selector) {
 function createChunkPromiseList(chunkList, name, TOKEN) {
   return chunkList
     .map((chunk, index) => {
-        console.log(chunk)
+      console.log(chunk);
       let formdata = new FormData();
       formdata.append("type", "upload");
       formdata.append("name", name);
@@ -72,35 +72,39 @@ function createChunkPromiseList(chunkList, name, TOKEN) {
     })
     .map(formdata => {
       console.log(formdata.get("type"));
-      return axios.post(UPLOAD_URL, formdata);
+      return axios.post(UPLOAD_URL, formdata, axiosConfig);
     });
 }
 //提交数据
 async function submitUpload(url, file) {
-  const CHUNKSIZE = 2 * 1024 * 1024; // 2M
+  const CHUNKSIZE = 1 * 1024 * 1024; // 2M
   const TOKEN = Date.now();
   //切割数组
   const chunkList = sliceFile(file, CHUNKSIZE);
   //创建formdata 并上传
-  let promiseList = createChunkPromiseList(chunkList,file.name,TOKEN);
-  //并发控制
-  //   let fileUpload = createLimitPromise(3, promiseList);
-  Promise.all(promiseList).then(res => {
-    let mergeFormData = new FormData();
-    mergeFormData.append("type", "merge");
-    mergeFormData.append("token", TOKEN);
-    mergeFormData.append("chunCount", promiseList.length);
-    mergeFormData.append("fileName", name);
-    //结束后发送合并请
-    axios.post(url, mergeFormData).then(res => {
-      console.log(res);
-    });
-  });
-}
+  console.log(file.name);
+  let promiseList = createChunkPromiseList(chunkList, file.name, TOKEN);
+  //并发控制 上传
+  await createLimitPromise(2, promiseList);
 
+  //合并分片
+  let mergeFormData = new FormData();
+  mergeFormData.append("type", "merge");
+  mergeFormData.append("token", TOKEN);
+  mergeFormData.append("chunkCount", promiseList.length);
+  mergeFormData.append("fileName", file.name);
+  //结束后发送合并请
+  let res = await axios.post(url, mergeFormData, axiosConfig);
+  console.log(res);
+}
+//通过progressEvent 可以实现对上传进度的监听
+const axiosConfig = {
+  onUploadProgress: progressEvent => {
+    console.log(progressEvent);
+  }
+};
 const UPLOAD_URL = "http://localhost:8081/upload";
 
 document.querySelector("#upload_btn").addEventListener("click", () => {
   submitUpload(UPLOAD_URL, getElFile("input#test"));
-    
 });
