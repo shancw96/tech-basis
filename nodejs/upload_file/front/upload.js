@@ -1,17 +1,20 @@
-function createLimitPromise(limitNum, promiseList) {
+function createLimitPromise(limitNum, promiseListRaw) {
   let resArr = [];
   let handling = 0;
   let resolvedNum = 0;
+  let promiseList = [...promiseListRaw]
+  let runTime =  promiseListRaw.length
 
   return new Promise(resolve => {
-    const runTime = promiseList.length;
-    for (let i = 0; i < runTime; i++) {
-      run([...promiseList]);
+    //并发执行limitNum 次
+    for (let i = 1; i <= limitNum; i++) {
+      run();
     }
 
-    function run(promiseList) {
-      if (handling < limitNum && promiseList.length) {
+    function run() {
+       if(!promiseList.length) return 
         handling += 1;
+        console.log("cur handling:" + handling)
         handle(promiseList.shift())
           .then(res => {
             resArr.push(res);
@@ -24,10 +27,11 @@ function createLimitPromise(limitNum, promiseList) {
             handling -= 1;
             resolvedNum += 1;
             console.log(`resolvedNum : ${resolvedNum}`);
-            if (resolvedNum === runTime) resolve(resArr);
-            run(promiseList);
+            if(resolvedNum === runTime){
+              resolve(resArr)
+            }
+            run();
           });
-      }
     }
     function handle(promise) {
       return new Promise((resolve, reject) => {
@@ -91,7 +95,7 @@ async function submitUpload(url, file) {
   let mergeFormData = new FormData();
   mergeFormData.append("type", "merge");
   mergeFormData.append("token", TOKEN);
-  mergeFormData.append("chunkCount", promiseList.length);
+  mergeFormData.append("chunkCount", chunkList.length);
   mergeFormData.append("fileName", file.name);
   //结束后发送合并请
   let res = await axios.post(url, mergeFormData, axiosConfig);
@@ -100,10 +104,11 @@ async function submitUpload(url, file) {
 //通过progressEvent 可以实现对上传进度的监听
 const axiosConfig = {
   onUploadProgress: progressEvent => {
-    console.log(progressEvent);
+    // console.log(progressEvent);
   }
 };
-const UPLOAD_URL = "http://localhost:8081/upload";
+const UPLOAD_URL = "http://104.238.161.75:8081/upload";
+// const UPLOAD_URL = "http://localhost:8081/upload";
 
 document.querySelector("#upload_btn").addEventListener("click", () => {
   submitUpload(UPLOAD_URL, getElFile("input#test"));
