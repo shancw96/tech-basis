@@ -5,6 +5,7 @@ const cors = require("koa2-cors");
 const KoaBody = require('koa-body')
 const Router = require("koa-router");
 const stdout = require("shancw-stdout");
+const fs = require('fs')
 const {renameFile,mergeChunkFile} = require('./utils')
 const path = require('path')
 const PORT = 8081;
@@ -12,6 +13,10 @@ const server = new Koa();
 const router = new Router()
 
 const uploadChunkPath = path.resolve(__dirname,'../data')
+
+if(!fs.existsSync(uploadChunkPath)){
+    fs.mkdirSync(uploadChunkPath)
+}
 
 server.listen(PORT, () => {
     stdout.bgGreen(`server start at port:${PORT}`);
