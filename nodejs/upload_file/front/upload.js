@@ -14,7 +14,6 @@ function createLimitPromise(limitNum, promiseListRaw) {
     function run() {
        if(!promiseList.length) return 
         handling += 1;
-        console.log("cur handling:" + handling)
         handle(promiseList.shift())
           .then(res => {
             resArr.push(res);
@@ -26,7 +25,10 @@ function createLimitPromise(limitNum, promiseListRaw) {
           .finally(() => {
             handling -= 1;
             resolvedNum += 1;
-            console.log(`resolvedNum : ${resolvedNum}`);
+            
+            //进度条 变量
+            loadedLen = resolvedNum
+
             if(resolvedNum === runTime){
               resolve(resArr)
             }
@@ -65,7 +67,7 @@ function getElFile(selector) {
 function createChunkPromiseList(chunkList, name, TOKEN) {
   return chunkList
     .map((chunk, index) => {
-      console.log(chunk);
+      // console.log(chunk);
       let formdata = new FormData();
       formdata.append("type", "upload");
       formdata.append("name", name);
@@ -81,10 +83,12 @@ function createChunkPromiseList(chunkList, name, TOKEN) {
 }
 //提交数据
 async function submitUpload(url, file) {
+  console.log(file)
   const CHUNKSIZE = 1 * 1024 * 1024; // 2M
   const TOKEN = Date.now();
   //切割数组
   const chunkList = sliceFile(file, CHUNKSIZE);
+  fileChunkLen = chunkList.length
   //创建formdata 并上传
   console.log(file.name);
   let promiseList = createChunkPromiseList(chunkList, file.name, TOKEN);
@@ -101,14 +105,21 @@ async function submitUpload(url, file) {
   let res = await axios.post(url, mergeFormData, axiosConfig);
   console.log(res);
 }
-//通过progressEvent 可以实现对上传进度的监听
+
+
+let loadedLen = 0 
+let fileChunkLen = 0
+function getLoadedPercent(){
+
+}
 const axiosConfig = {
   onUploadProgress: progressEvent => {
-    // console.log(progressEvent);
+    const curPercent =( loadedLen / fileChunkLen *100).toFixed(2)
+    console.log(` percentage :${curPercent}%`)
   }
 };
-const UPLOAD_URL = "http://104.238.161.75:8081/upload";
-// const UPLOAD_URL = "http://localhost:8081/upload";
+// const UPLOAD_URL = "http://104.238.161.75:8081/upload";
+const UPLOAD_URL = "http://localhost:8081/upload";
 
 document.querySelector("#upload_btn").addEventListener("click", () => {
   submitUpload(UPLOAD_URL, getElFile("input#test"));
