@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./konva.js"></script>
+    <title>Document</title>
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+          background-color: #f0f0f0;
+        }
+      </style>
+</head>
+<body>
+    <div id="container">
+    </div>
+    <script>
+      var width = 200;
+      var height = 200;
+
+      var stage = new Konva.Stage({
+        container: 'container',
+        width: width,
+        height: height
+      });
+
+      var layer = new Konva.Layer();
+
+      var blob = new Konva.Line({
+        points: [25, 20, 23, 160, 70, 93, 150, 109, 290, 139, 270, 93],
+        fill: '#00D2FF',
+        stroke: 'black',
+        strokeWidth: 5,
+        closed: true,
+        tension: 0.3
+      });
+
+      // add the shape to the layer
+      layer.add(blob);
+
+      // add the layer to the stage
+      stage.add(layer);
+    </script>
+</body>
+</html>

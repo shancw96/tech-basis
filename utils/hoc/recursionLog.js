@@ -5,7 +5,7 @@
  */
 const logDepthBy = fn=>(depth,...restArg)=>{
     let skipedTab = Array(depth).fill('_').reduce((prev,_)=>prev+='\t',"")
-    fn(skipedTab,restArg)
+    fn(skipedTab,...restArg)
 }
 
 

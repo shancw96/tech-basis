@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src='./konva.js'></script>
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #f0f0f0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <script>
+      const stage = new Konva.Stage({ 
+           container:'container',
+           width:1000,
+           height:1000
+      })
+      const layer = new Konva.Layer()
+      const rect=  new Konva.Rect({
+          x:500,
+          y:500,
+          width:100,
+          height:50,
+          offset:{
+            x:10,
+            y:100
+          },
+          fill:'red',
+          stroke:'black',
+          strokeWidth:2
+      })
+      const round = new Konva.Circle({
+          x:500,
+          y:500,
+          radius:3,
+          stroke:'red',
+          strokeWidth:'2'
+      })
+      layer.add(rect)
+      layer.add(round)
+      stage.add(layer)
+
+      //start animation
+      //角速度 360/90 = 4  //-> 4s一圈
+      const angularSpeed = 90;
+      const anim = new Konva.Animation(frame=>{
+          const angleDiff = frame.timeDiff * angularSpeed /1000
+          rect.rotate(angleDiff)
+      },layer)
+      anim.start()
+    </script>
+  </body>
+</html>

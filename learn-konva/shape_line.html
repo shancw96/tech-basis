@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./konva.js"></script>
+    <title>Document</title>
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+          background-color: #f0f0f0;
+        }
+      </style>
+</head>
+<body>
+    <div id="container">
+    </div>
+    <script>
+        //获取挂载的元素
+        const WIDTH = window.innerWidth
+        const HEIGHT = window.innerHeight
+        let point_x = 100
+        let point_y = 100
+        const stage = new Konva.Stage({
+            container:'container',
+            width:WIDTH,
+            height:HEIGHT
+        })
+
+        const canvas = document.querySelector('div#container')
+        canvas.onmousemove = e=>{
+            console.log(point_x)
+        }
+
+
+
+
+
+        const layer = new Konva.Layer();
+
+        const colLine = new Konva.Line({
+        points:[point_x,point_y,point_x,0,point_x,HEIGHT],
+        stroke:'red',
+        strokeWidth:2,
+        lineCap:'round',//?
+        lineJoin:'round'//?
+        });
+
+        const rowLine = new Konva.Line({
+        points:[point_x,point_y,0,point_y,WIDTH,point_y],
+        stroke:'green',
+        strokeWidth:2,
+        lineCap:'round',
+        lineJoin:'round'
+        })
+
+        const curDot = new Konva.Circle({
+            x:point_x,
+            y:point_y,
+            radius:3,
+            fill:'yellow',
+            stroke:'black',
+            strokeWidth:2
+        })
+
+        layer.add(rowLine)
+        layer.add(colLine)
+        layer.add(curDot)
+
+        stage.add(layer)
+    </script>
+</body>
+</html>
