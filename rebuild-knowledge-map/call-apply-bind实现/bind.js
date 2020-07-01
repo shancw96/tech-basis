@@ -37,11 +37,13 @@
       name: 'shancw'
     }
     Function.prototype.myBind = function(context,...arg1) {
-      let fn = this
-      return function F(arg2){
-        //对于函数来说有两种方式调用，一种是直接调用，一种是通过 `new` 的方式
-        if(this instanceof F) return new fn([...arg1,...arg2])
-        return fn.apply(context,[...arg1,...arg2])
+      context = context || window
+      return (...args)=>{
+        context.fn = this
+        const result = context.fn(...arg1,...args)
+        delete context.fn;
+        return result
+      }
     }
   }
 
