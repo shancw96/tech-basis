@@ -12,14 +12,9 @@ const isPalindrome = (head) => {
   }
   
   // 栈弹出
-  console.log(fast)
-  console.log(slow)
-  console.log(stack.map(node=>node.val))
   if(fast) slow = slow.next //当fast存在的情况下，为奇数， slow 进入下半段
   while (slow) {
     const last = stack.pop();
-    console.log(last.val)
-    console.log(slow.val)
     if (slow.val !== last.val) return false;
     slow = slow.next;
   }
