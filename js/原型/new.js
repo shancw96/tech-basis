@@ -1,7 +1,6 @@
 function Fat(name,age){
   this.age = age;
   this.name = name;
-  return '1'
 }
 
 Fat.prototype.sayName = function(){
@@ -10,18 +9,12 @@ Fat.prototype.sayName = function(){
 
 //模拟new的效果。this替换
 
-// function objectFactory(Fn,...args){
-//   let obj = {};
-//   obj.__proto__ = Fn.prototype
-//   let isObj = Fn.apply(obj,args)
-//   // console.log(isObj)
-//   return typeof isObj === 'object' ? isObj : obj
-
-//   // return obj
-// }
+function createObj(factory, ...args) {
+  let obj = Object.create(factory.prototype)
+  let isObj = factory.apply(obj, args)// 构造函数执行
+  return isObj === undefined ? obj : isObj
+}
 
 
-let test = objectFactory(Fat,'shancw','22')
-let compare = new Fat('shancw','22')
-console.log(test.age)
-compare.sayName()//TypeError: compare.sayName is not a function
+let test = createObj(Fat,'shancw','22')
+test.sayName()
