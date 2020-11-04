@@ -1,5 +1,4 @@
 let targetMap = new WeakMap()
-let uid = 0
 function reactive(target) {
   // 1. 判断是否为对象，proxy 只能代理对象
   if(!isObject(target)) return target
@@ -18,6 +17,7 @@ function get(target, key, receiver) {
   if(isObject(res)) {
     reactive(res)
   }
+  return res
 }
 
 function set(target, key, value, receiver) {
@@ -27,7 +27,7 @@ function set(target, key, value, receiver) {
 }
 
 function isObject(obj) {
-  return Object.prototype.toString.call(obj) === '[Object object]'
+  return Object.prototype.toString.call(obj) === '[object Object]'
 }
 
 function track(object, key) {
@@ -39,11 +39,11 @@ function track(object, key) {
   // 1.按照对象初始化分组
   let depsMap = targetMap.get(object)
   if(!depsMap) {
-    targetMap.set(object, new Map())
+    targetMap.set(object, depsMap = new Map())
   }
   let dep = depsMap.get(key)
   if(!dep) {
-    depsMap.set(key, new Set())
+    depsMap.set(key, dep = new Set())
   }
   //2. key <-> Array<Effect>
   if(!dep.has(activeEffect)) {
@@ -89,10 +89,23 @@ function effect(fn) {
       }finally {
         activeEffect = undefined
       }
-    }  
-    effect.id = uid++
-    effect.raw = fn
+    }
     effect.deps = []
     return effect
   }
 }
+
+// -------test--------
+const data = {
+  msg: 'hey there',
+  count: 1
+}
+const proxyData = reactive(data)
+effect(() => {
+  console.log('effect(msg)', proxyData.msg)
+})
+proxyData.msg = 'hey there! i\'m here'
+proxyData.count = 2//
+
+effect(() => console.log('effect 2(count):', proxyData.count))
+proxyData.count = 'should work'
