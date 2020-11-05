@@ -96,6 +96,7 @@ function effect(fn) {
 }
 
 // -------test--------
+// test
 const data = {
   msg: 'hey there',
   count: 1
