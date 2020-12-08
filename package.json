@@ -1,0 +1,25 @@
+{
+  "name": "tech-basis",
+  "version": "1.0.0",
+  "description": "各类技术实现",
+  "main": "main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shancw96/tech-basis.git"
+  },
+  "keywords": [
+    "tech"
+  ],
+  "author": "shanCW",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shancw96/tech-basis/issues"
+  },
+  "homepage": "https://github.com/shancw96/tech-basis#readme",
+  "dependencies": {
+    "typescript": "^4.1.2"
+  }
+}
