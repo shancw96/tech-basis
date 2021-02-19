@@ -2,9 +2,11 @@
   "name": "tech-basis",
   "version": "1.0.0",
   "description": "各类技术实现",
-  "main": "main.ts",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "test": "npm run mocha --recursive ./src/**/__tests__/*",
+    "mocha": "mocha -r ts-node/register"
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,11 @@
   },
   "homepage": "https://github.com/shancw96/tech-basis#readme",
   "dependencies": {
-    "typescript": "^4.1.2"
+    "typescript": "^4.1.2",
+    "@types/chai": "4.0.4",
+    "@types/mocha": "2.2.43",
+    "chai": "4.1.2",
+    "mocha": "3.5.3",
+    "ts-node": "3.3.0"
   }
 }
