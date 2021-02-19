@@ -98,8 +98,8 @@ class Observer {
           return value // 不使用obj[key], 因为会重复触发get操作
         },
         set(newVal) {
-          value = newVal
-          observe(newVal)
+          if(newVal === value) return;
+          value = observe(newVal)
           dep.notify()
         }
       })
@@ -128,7 +128,7 @@ class Dep {
 
 function observe(obj: any) {
   if(!obj || typeof obj !== 'object') {
-    return;
+    return obj
   }
   return new Observer(obj)
 }
