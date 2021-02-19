@@ -78,6 +78,7 @@ class Watcher {
 
 
 class Observer {
+  dep: Dep = new Dep()
   constructor(obj: any) {
     this.walk(obj)
   }
@@ -85,10 +86,14 @@ class Observer {
   walk(obj: any) {
     const defineReactive = (key: string, value: any) => {
       const dep = new Dep()
+      let child = observe(value);
       Object.defineProperty(obj, key, {
         get() {
           if(Dep.target) {
             dep.depend()
+            if(child) {
+              child.dep.depend()
+            }
           }
           return value // 不使用obj[key], 因为会重复触发get操作
         },
@@ -108,7 +113,7 @@ class Dep {
   id: string
   subs: Array<Watcher> = []
   constructor() {
-    this.id = Math.random + ''
+    this.id = Math.random() + ''
   }
   addSub(sub: Watcher) {
     this.subs.push(sub)
@@ -125,14 +130,18 @@ function observe(obj: any) {
   if(!obj || typeof obj !== 'object') {
     return;
   }
-  new Observer(obj)
+  return new Observer(obj)
 }
 
 const app2 = new Vue({
   data: {
-    msg: 'hello'
+    msg: {
+      test: '111'
+    }
   }
 })
-app2.$watch('msg', (newVal: any, oldVal: any) => {
+app2.$watch('msg.test', (newVal: any, oldVal: any) => {
   console.log(newVal, oldVal)
 })
+
+app2.$options.data.msg.test = '222'
