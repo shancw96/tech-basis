@@ -63,7 +63,7 @@ function trigger(target, key) {
   const add = effectsToAdd => {
     if(!effectsToAdd) return
     effectsToAdd.forEach(effect => {
-      if(effect !== activeEffect) {// ? 为什么不能是activeEffect
+      if(effect !== activeEffect) {// question 为什么不能是activeEffect. ans: 参考例1情况，如果不排除activeEffect，就会循环执行trigger
         effects.add(effect)
       }
     })
@@ -102,11 +102,15 @@ const data = {
   count: 1
 }
 const proxyData = reactive(data)
+// case1 set in effect
 effect(() => {
   console.log('effect(msg)', proxyData.msg)
+  proxyData.msg = 'hey there! i\'m here'
 })
+// case2 normal set
 proxyData.msg = 'hey there! i\'m here'
 proxyData.count = 2//
 
+// case3 normal get
 effect(() => console.log('effect 2(count):', proxyData.count))
 proxyData.count = 'should work'
