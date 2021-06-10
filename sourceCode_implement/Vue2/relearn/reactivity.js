@@ -1,15 +1,15 @@
+
+function observe(data) {
+  return !data || typeof data !== 'object' ? data : new Observer(data)
+}
 class Vue {
   constructor($options) {
     this.$options = $options;
-    this._data = this.$options.data;
-    this.computed = $options.computed
-    if($options.computed) {
-      this.computed = this.$options.computed
-      this.initComputed()
-    }
+    this._data = this.$options.data
     this.proxyData(this._data)
-    observe(this._data)
+    observe(data)
   }
+  // this[key] = this.data[key]
   proxyData(data) {
     Object.keys(data).forEach(key => {
       Object.defineProperty(this, key, {
@@ -23,101 +23,99 @@ class Vue {
     })
   }
 
-  initComputed() {
-    const watchers = this._computedWatchers =  Object.create(null)
-    for(const key in this.computed) {
-      const getter = typeof this.computed[key] === 'function' ? this.computed[key] : this.computed.get
-      watchers[key] = new Watcher(this, getter, )
-    }
-  }
-
   $watch(exp, cb) {
     new Watcher(this, exp, cb)
   }
 }
-
+// 为每一个key生成一个Dep,进行发布订阅
 class Observer {
   constructor(data) {
+    this.dep = new Dep()
     this.walk(data)
   }
 
   walk(data) {
-    const defineReactive = (key, value) => {
-      const keyBasedDep = new Dep();
-      const childObj = observe(value)
+    const defineReactive = (key, defaultValue) => {
+      const childObj = observe(defaultValue)
       Object.defineProperty(data, key, {
         get() {
-          // 执行依赖收集，只有在初次执行watch才会执行
           if(Dep.target) {
-            keyBasedDep.depend();
+            dep.depend()
             childObj instanceof Observer && childObj.dep.depend()
           }
-          return value
+          return defaultValue
         },
         set(newVal) {
-          if(newVal === value) return;
-          value = observe(newVal)
-          keyBasedDep.notify(value)
+          if(newVal === defaultValue) return;
+          defaultValue = observe(newVal)
+          dep.notify()
         }
       })
     }
-    Object.keys(data).forEach((key) => defineReactive(key, data[key]))
+    Object.keys(data).forEach(key => defineReactive(key, data[key]))
   }
 }
 
 class Dep {
-  static target = null
+  static target = null;
+
   constructor() {
-    this.id = 'Dep_' + Math.random() 
+    this.id = String(Math.random());
     this.subs = []
   }
-
+  // Dep 添加 Watcher, Watcher 添加Dep
   depend() {
-    Dep.target && Dep.target.addDep(this)
-  }
-  addSub(watcher) {
-    this.subs.push(watcher)
+    Dep.target.addDep(this)
   }
   notify() {
     this.subs.forEach(sub => sub.run())
+  }
+
+  addSub(sub) {
+    this.subs.push(sub)
   }
 }
 
 class Watcher {
   constructor(vm, exp, cb) {
-    this.getter = typeof exp === 'function' ? exp : this.parseGetter(exp) // computed 属性用到：exp === function 
+    this.depsMap = new Map()
     this.vm = vm
-    this.depsId = new Set()
-    this.cb = cb
+    this.getters = this.parseGetter(exp)
+    this.cb = cb;
+    this.value = this.get()
   }
-
   addDep(dep) {
-    if(this.depsId.has(dep.id)) return;
-    this.depsId.add(dep.id)
-    dep.addSub(this)
-  }
-
-  run() {
-    const newVal = this.get()
-    if(newVal === oldVal) return;
-    this.cb.call(this.vm, newVal, oldVal)
-  }
-
-  parseGetter(exp) {
-    if(/^\.\w|\w\.$/.test(exp)) return;
-    const keyList = exp.split('.')
-    return function parseCore(data, keyList = keyList) {
-      return !keyList.length ? data : parseCore(data[keyList[0]], keyList.slice(1))
+    if(!this.depsMap.has(dep.id)) {
+      dep.addSub(this);
+      this.depsMap.set(dep.id, dep)
     }
   }
-
+  removeDep(dep) {
+    this.depsMap.delete(dep.id)
+  }
   get() {
-    Dep.target = this
-    const value = this.getter.call(this.vm, this.vm)
+    Dep.target = this;
+    const value = this.getters.call(this.vm, this.vm)
     Dep.target = null
     return value
   }
-}
-function observe(data) {
-  return !data || typeof data !== 'object' ? data : new Observer(data)
+  parseGetter(exp) {
+    if(!isValid(exp)) throw new Error('invalid key for Watcher')
+    const keys = exp.split('.')
+    return function parseCore(obj, keysArr = keys) {
+      return obj && keysArr.length ? obj[keysArr[0]] : parseCore(obj, keysArr.slice(1))
+    }
+
+    function isValid(exp) {
+      return /^\.\w|\w\.$/.test(exp)
+    }
+  }
+
+  run() {
+    const oldValue = this.value
+    const newValue = this.get()
+    if(oldValue !== newValue) {
+      this.cb(newValue, oldValue)
+    }
+  }
 }
