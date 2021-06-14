@@ -8,6 +8,7 @@ function create (array) {
   curNode.next = create(array.slice(1));
   return curNode;
 }
+
 LinkedList.prototype.forEach = function(fn) {
   let cur = this.head;
   while(cur){
@@ -28,11 +29,21 @@ LinkedList.prototype.add = function(val) {
   tail.next = new Node(val)
   tail = tail.next;
   return tail
-}
+} 
 function Node(val) {
   this.val = val;
   this.next = null;
 }
+
+Node.prototype.toString = (node) => {
+  let str = 'head';
+  while(node && node.val) {
+    str = `${str} -> ${node.val}`
+    node = node.next;
+  }
+  return str;
+}
+
 module.exports = {
   LinkedList,
 };
