@@ -35,7 +35,7 @@ function Node(val) {
   this.next = null;
 }
 
-Node.prototype.toString = (node) => {
+LinkedList.toString = (node) => {
   let str = 'head';
   while(node && node.val) {
     str = `${str} -> ${node.val}`
@@ -46,4 +46,5 @@ Node.prototype.toString = (node) => {
 
 module.exports = {
   LinkedList,
+  Node
 };
