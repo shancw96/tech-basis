@@ -22,12 +22,16 @@ export default class BinarySearchTree {
   }
   
   get min() {
-    return min(this.root)?.val;
+    if (!this.root) return this.root;
+    return BinarySearchTree.min(this.root).val
+  }
 
-    function min(root?: TreeNode): TreeNode | undefined {
-      if (!root || !root.left) return root;
-      return min(root.left);
-    }
+  static min(treeNode: TreeNode, parent?: TreeNode): TreeNode & {parent?: TreeNode} {
+    if (!treeNode.left) return {
+      ...treeNode,
+      parent
+    };
+    else return BinarySearchTree.min(treeNode.left, treeNode);
   }
 
   get max() {
@@ -81,32 +85,42 @@ export default class BinarySearchTree {
     }
   }
   // delete
-  // TODO: reBalance BST for better search performance when delete,
   public delete(val: any) {
     this.size -= 1 ;
     const [node, parent] = this.search(val);
 
+    // special case1
     if (!node) return;
+    // special case2
+    else if (!parent) {
+      this.root = undefined;
+      this.size = 0
+    }
     // node child node -> leaf node
     else if (isLeafNode(node)) {
       // whether root
-      if (node === this.root) {
-        this.root = undefined
-      } else {
-        const childKey = getChildKeyFlag(node, parent as TreeNode);
-        
-        if (!childKey || !parent) throw new Error('should never happen');
-        
-        parent[childKey] = undefined
-      }
+      const childKey = getChildKeyFlag(node, parent as TreeNode);
+      
+      if (!childKey) throw new Error('should never happen');
+      
+      parent[childKey] = undefined
     } 
     // full child node
     else if (isBothChildNode(node)) {
-
+      // find node sub min node
+      const minNode = BinarySearchTree.min(node);
+      // replace val
+      node.val = minNode.val;
+      // remove minNode
+      const minNodeParent = minNode.parent as TreeNode;
+      minNodeParent.left = undefined;
     } 
     // single child node
-    else {
-
+    else { 
+      const childKey = getChildKeyFlag(node, parent as TreeNode);
+      if (!childKey) throw new Error('should never happen');
+      const nodeKey = node.left ? 'left' : 'right'
+      parent[childKey] = node[nodeKey]
     }
     
 

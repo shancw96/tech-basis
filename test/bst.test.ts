@@ -13,23 +13,24 @@ describe('bst api', () => {
     bstGlobal?.insert(33);
     bstGlobal?.insert(34);
     bstGlobal?.insert(32);
+    bstGlobal?.insert(36);
 
   //              20
   //        5,           30
   // 4,             21,       31
   //                               33
   //                         32,          34
+  //                                             36
   })
-  it('BST - initial - val', () => {
+  it('BST - initial', () => {
     const bst = new BST(1);
     expect(bst.root?.val).toBe(1)
   });
-  it('BST - insert api', () => {
-    bstGlobal.logAll();
-    expect(bstGlobal.max).toBe(34);
+  it('BST - insert', () => {
+    expect(bstGlobal.max).toBe(36);
     expect(bstGlobal.min).toBe(4);
   })
-  it('BST - search api - exist', () => {
+  it('BST - search - exist', () => {
     const [result, parent] = bstGlobal.search(5);
     expect(result?.val).toBe(5);
     expect(parent?.val).toBe(20);
@@ -42,6 +43,29 @@ describe('bst api', () => {
     expect(result?.val).toBeUndefined();
   })
   it('BST - property - size', () => {
-    expect(bstGlobal.size).toBe(9)
+    expect(bstGlobal.size).toBe(10)
+  })
+  it('BST - delete - both', () => {
+    bstGlobal.delete(30)
+    const [node, parent] = bstGlobal.search(30);
+    expect(node).toBeUndefined();
+  })
+
+  it('BST - delete - leaf', () => {
+    bstGlobal.delete(4)
+    const [node, parent] = bstGlobal.search(4);
+    expect(node).toBeUndefined();
+    bstGlobal.logAll();
+  })
+  it('BST - delete - single', () => {
+    bstGlobal.delete(34)
+    const [node, parent] = bstGlobal.search(34);
+    expect(node).toBeUndefined();
+    bstGlobal.logAll();
+  })
+  it('BST - delete - root', () => {
+    bstGlobal.delete(20)
+    expect(bstGlobal.size).toBe(0);
+    expect(bstGlobal.root).toBeUndefined();
   })
 })
