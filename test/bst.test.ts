@@ -1,4 +1,4 @@
-import BST from '../dataStructure/binary-search-tree';
+import BST, { TreeNode } from '../dataStructure/binary-search-tree';
 
 describe('bst api', () => {
   let bstGlobal: BST
@@ -21,6 +21,7 @@ describe('bst api', () => {
   //                               33
   //                         32,          34
   //                                             36
+  //   const ans = [4, 5, 21, ];
   })
   it('BST - initial', () => {
     const bst = new BST(1);
@@ -67,5 +68,37 @@ describe('bst api', () => {
     bstGlobal.delete(20)
     expect(bstGlobal.size).toBe(0);
     expect(bstGlobal.root).toBeUndefined();
+  })
+  it('BST - travel - inOrder', () => {
+    // inorder 4 5 20  21 30 31 32 33 34 36
+    const ans = [4,5,20,21,30,31,32,33,34,36];
+    const travelResult: number[] = []
+    const travelFn = (node: TreeNode) => {
+      travelResult.push(node.val)
+    }
+    bstGlobal.inOrderTravel(bstGlobal.root, travelFn)
+    expect(ans).toEqual(travelResult)
+  })
+  it('BST - travel - preOrder', () => {
+    // preorder
+    const ans = [20, 5, 4, 30, 21, 31, 33, 32, 34, 36];
+
+    const travelResult: number[] = []
+    const travelFn = (node: TreeNode) => {
+      travelResult.push(node.val)
+    }
+    bstGlobal.preOrderTravel(bstGlobal.root, travelFn)
+    expect(ans).toEqual(travelResult)
+  })
+  it('BST - travel - postOrder', () => {
+    const ans = [4, 5, 21, 32, 36, 34, 33, 31, 30, 20]; 
+  
+    const travelResult: number[] = []
+    const travelFn = (node: TreeNode) => {
+      travelResult.push(node.val)
+    }
+
+    bstGlobal.postOrderTravel(bstGlobal.root, travelFn)
+    expect(ans).toEqual(travelResult)
   })
 })

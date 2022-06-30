@@ -1,4 +1,4 @@
-class TreeNode {
+export class TreeNode {
   left?: TreeNode;
   right?: TreeNode;
   val?: any;
@@ -141,6 +141,28 @@ export default class BinarySearchTree {
 
     }
     
+  }
+  // left root right
+  public inOrderTravel(node?: TreeNode, travelFn: (node: TreeNode) => void = node => console.log(node.val)) {
+    if (!node) return;
+    this.inOrderTravel(node.left, travelFn)
+    travelFn(node);
+    this.inOrderTravel(node.right, travelFn)
+  }
+  // root left right
+  public preOrderTravel(node?: TreeNode, travelFn: (node: TreeNode) => void = node => console.log(node.val)) {
+    if (!node) return;
+    travelFn(node);
+    this.preOrderTravel(node.left, travelFn)
+    this.preOrderTravel(node.right, travelFn)
+  }
+
+  // left right root
+  public postOrderTravel(node?: TreeNode, travelFn: (node: TreeNode) => void = node => console.log(node.val)) {
+    if (!node) return;
+    this.postOrderTravel(node.left, travelFn)
+    this.postOrderTravel(node.right, travelFn)
+    travelFn(node);
   }
   // 按层打印
   public logAll() {
