@@ -1,3 +1,9 @@
-# 这个项目是干嘛的？
-各种源码，jsAPI,算法，以及经常使用库 的implement
-此处的更新一般为博客具体代码的实现
+important dir intro：
++ algorithm: implementation of algorithm
++ dataStructure: implementation of dataStrucure
+  + BST: insert, delete, travel,search
++ sourceCode_implement: js api or part of fe framework  implement
+  + Vue3
+    + reactivity
+  + Vue2
+    + reactivity
