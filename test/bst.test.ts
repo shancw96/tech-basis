@@ -27,9 +27,13 @@ describe('bst api', () => {
     const bst = new BST(1);
     expect(bst.root?.val).toBe(1)
   });
+  it('BST - isValid', () => {
+    expect(bstGlobal.isBST(bstGlobal.root)).toBe(true);
+  })
   it('BST - insert', () => {
     expect(bstGlobal.max).toBe(36);
     expect(bstGlobal.min).toBe(4);
+    expect(bstGlobal.isBST(bstGlobal.root)).toBe(true);
   })
   it('BST - search - exist', () => {
     const [result, parent] = bstGlobal.search(5);
@@ -46,28 +50,35 @@ describe('bst api', () => {
   it('BST - property - size', () => {
     expect(bstGlobal.size).toBe(10)
   })
-  it('BST - delete - both', () => {
+  it('BST - delete - both - case1: subTree minNode is leaf node', () => {
+    bstGlobal.insert(33.5)
+    bstGlobal.delete(33);// 33.5 as right sub Tree minNode and 33.5 is leaf node under 34.left
+    expect(bstGlobal.isBST(bstGlobal.root)).toBe(true);
+  })
+  it('BST - delete - both - case2: subTree minNode has right child', () => {
     bstGlobal.delete(30)
     const [node, parent] = bstGlobal.search(30);
     expect(node).toBeUndefined();
+    expect(bstGlobal.isBST(bstGlobal.root)).toBe(true);
   })
 
   it('BST - delete - leaf', () => {
     bstGlobal.delete(4)
     const [node, parent] = bstGlobal.search(4);
     expect(node).toBeUndefined();
-    bstGlobal.logAll();
+    expect(bstGlobal.isBST(bstGlobal.root)).toBe(true);
   })
   it('BST - delete - single', () => {
     bstGlobal.delete(34)
     const [node, parent] = bstGlobal.search(34);
     expect(node).toBeUndefined();
-    bstGlobal.logAll();
+    expect(bstGlobal.isBST(bstGlobal.root)).toBe(true);
   })
   it('BST - delete - root', () => {
     bstGlobal.delete(20)
     expect(bstGlobal.size).toBe(0);
     expect(bstGlobal.root).toBeUndefined();
+    expect(bstGlobal.isBST(bstGlobal.root)).toBe(true);
   })
   it('BST - travel - inOrder', () => {
     // inorder 4 5 20  21 30 31 32 33 34 36

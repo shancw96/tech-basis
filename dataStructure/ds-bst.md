@@ -126,8 +126,10 @@ function searchNode(
 1. 被删除节点是没有 children (leaf node): 直接将其 parent 的对应 child（left/right）指针置空
 2. 被删除节点只有一个 child: 将 parent 和 child 进行连接
 3. 被删除的节点有两个 child：
-   A: 找到 Node 右子树 的最小值，将其 val 设置为当前值，并删掉右子树的最小值
-   B: 或者 找到 Node 左子树 的最大值，将其 val 设置为当前值，并删掉左子树的最大值
+   1. 找到 Node 右子树 的最小值，将其 val 设置为当前值，并删掉右子树的最小值，我们称之为 minNode，minNode 的删除需要考虑如下两种场景
+      A1: minNode 如果是 leaf Node，那么直接删除
+      A2: minNode 如果存在 right child, 那么参考第二点，将其 parent 和 其 child 进行连接
+   2. 或者 找到 Node 左子树 的最大值，将其 val 设置为当前值，并删掉左子树的最大值
 
 ```typescript
 
@@ -157,7 +159,9 @@ function searchNode(
       node.val = minNode.val;
       // remove minNode in right sub tree
       const minNodeParent = minNode.parent as TreeNode;
-      minNodeParent.left = undefined;
+      if (minNodeParent) {
+        minNodeParent.left = undefined;
+      }
     }
     // single child node
     else {

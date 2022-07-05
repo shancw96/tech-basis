@@ -108,12 +108,19 @@ export default class BinarySearchTree {
     // full child node
     else if (isBothChildNode(node)) {
       // find min node in right sub tree
-      const minNode = BinarySearchTree.min(node.right as TreeNode);
+      const minNode = BinarySearchTree.min(node as TreeNode);
       // replace val
       node.val = minNode.val;
       // remove minNode in right sub tree
+      // minNode has right child 
+      if (minNode.right) {
+        node.right = minNode.right;
+      }
       const minNodeParent = minNode.parent as TreeNode;
-      minNodeParent.left = undefined;
+      // minNode is Leaf Node
+      if (minNodeParent && isLeafNode(minNode)) {
+        minNodeParent.left = undefined;
+      }
     } 
     // single child node
     else { 
@@ -141,6 +148,12 @@ export default class BinarySearchTree {
 
     }
     
+  }
+  public isBST(node?: TreeNode): Boolean {
+    if (!node) return true
+    const leftNodeVal = node.left?.val ?? -Infinity
+    const rightNodeVal = node.right?.val ?? Infinity;
+    return leftNodeVal < node.val && node.val < rightNodeVal && this.isBST(node.left) && this.isBST(node.right);
   }
   // left root right
   public inOrderTravel(node?: TreeNode, travelFn: (node: TreeNode) => void = node => console.log(node.val)) {
