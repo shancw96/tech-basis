@@ -107,11 +107,11 @@ export default class BinarySearchTree {
     } 
     // full child node
     else if (isBothChildNode(node)) {
-      // find node sub min node
-      const minNode = BinarySearchTree.min(node);
+      // find min node in right sub tree
+      const minNode = BinarySearchTree.min(node.right as TreeNode);
       // replace val
       node.val = minNode.val;
-      // remove minNode
+      // remove minNode in right sub tree
       const minNodeParent = minNode.parent as TreeNode;
       minNodeParent.left = undefined;
     } 

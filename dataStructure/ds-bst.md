@@ -125,5 +125,63 @@ function searchNode(
 
 1. 被删除节点是没有 children (leaf node): 直接将其 parent 的对应 child（left/right）指针置空
 2. 被删除节点只有一个 child: 将 parent 和 child 进行连接
-3. 被删除的节点有两个 child：找到当前 Node 子树的最小值，将其 val 设置为当前值，并删掉最小值
-4. TODO: 正确调整更换值后的 child 顺序
+3. 被删除的节点有两个 child：
+   A: 找到 Node 右子树 的最小值，将其 val 设置为当前值，并删掉右子树的最小值
+   B: 或者 找到 Node 左子树 的最大值，将其 val 设置为当前值，并删掉左子树的最大值
+
+```typescript
+
+  delete(val: any) {
+    const [node, parent] = this.search(val);
+
+    // special case1
+    if (!node) return;
+    // special case2
+    else if (!parent) {
+      this.root = undefined;
+    }
+    // node child node -> leaf node
+    else if (isLeafNode(node)) {
+      // whether root
+      const childKey = getChildKeyFlag(node, parent as TreeNode);
+
+      if (!childKey) throw new Error('should never happen');
+
+      parent[childKey] = undefined
+    }
+    // full child node
+    else if (isBothChildNode(node)) {
+      // find min node in right sub tree
+      const minNode = BinarySearchTree.min(node.right as TreeNode);
+      // replace val
+      node.val = minNode.val;
+      // remove minNode in right sub tree
+      const minNodeParent = minNode.parent as TreeNode;
+      minNodeParent.left = undefined;
+    }
+    // single child node
+    else {
+      const childKey = getChildKeyFlag(node, parent as TreeNode);
+      if (!childKey) throw new Error('should never happen');
+      const nodeKey = node.left ? 'left' : 'right'
+      parent[childKey] = node[nodeKey]
+    }
+
+
+    function isLeafNode(node: TreeNode) {
+      return !node.left && !node.right
+    }
+
+    function isBothChildNode(node: TreeNode) {
+      return !!node.left && !!node.right
+    }
+
+    function getChildKeyFlag(node: TreeNode, parent: TreeNode): 'left' | 'right' | '' {
+      return parent.left?.val === node.val
+        ? 'left'
+        : parent.right?.val === node.val
+        ? 'right'
+        : ''
+    }
+  }
+```
