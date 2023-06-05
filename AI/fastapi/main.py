@@ -1,4 +1,5 @@
 import time
+import uuid
 from fastapi import FastAPI
 from langchain import LLMChain
 import uvicorn
@@ -12,8 +13,8 @@ from chromadb.config import Settings
 from fastapi import Query
 from chromadb.config import Settings
 from prompts import QA_PROMPT
+from typing import AsyncIterable, Awaitable
 
-from utils import ChatMessage
 from langchain.chat_models import ChatOpenAI
 from langchain.chains.summarize import load_summarize_chain
 
@@ -28,71 +29,117 @@ from langchain.callbacks import AsyncIteratorCallbackHandler
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage
 from pydantic import BaseModel
-# two ways to load env variables
-# 1.load env variables from .env file
-os.environ["http_proxy"] = "http://127.0.0.1:1087"
-os.environ["https_proxy"] = "http://127.0.0.1:1087"
-os.environ["all_proxy"] = "socks5://127.0.0.1:1080"
+from langchain.chat_models import AzureChatOpenAI
+from dotenv import load_dotenv
+from langchain.callbacks import get_openai_callback
+
+from utils import HistoryLoggerAsyncHandler, get_or_create_chatgroup_vector_db
+
+load_dotenv('/Users/wushangcheng/project/tech-basis/AI/fastapi/.env')
 
 
-OPENAI_API_KEY_ANSWER = "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"
+OPENAI_API_BASE = os.getenv('OPENAI_API_BASE')
+OPENAI_API_VERSION = os.getenv('OPENAI_API_VERSION')
+OPENAI_API_TYPE = os.getenv('OPENAI_API_TYPE')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
-OPENAI_API_KEY_SUMMARY = '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' 
-
-OPENAI_API_KEY_EMBEDDING = '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'
 
 app = FastAPI()
 
 
-summaryllm = ChatOpenAI(temperature=0.5, openai_api_key=OPENAI_API_KEY_SUMMARY)
+class StreamRequest(BaseModel):
+    message: str
 
-@app.post("/chat-process")
-async def chat_process(payload):
+"""
+    TODO: use custom QA chain refactor send_message function 
+    custom_qa_chain = LLMChain(llm=chatllm, prompt=QA_PROMPT, verbose=True)
+    print("正在发起提问...")
+    res = custom_qa_chain.predict(context = summary, question = payload.prompt)
+"""
+async def send_message(message: str, callbacks = []) -> AsyncIterable[str]:
+    callback = AsyncIteratorCallbackHandler()
+    
+    model = AzureChatOpenAI(
+        openai_api_base=OPENAI_API_BASE,
+        openai_api_version=OPENAI_API_VERSION,
+        deployment_name='gpt-35',
+        openai_api_key=OPENAI_API_KEY,
+        openai_api_type=OPENAI_API_TYPE,
+        streaming=True,
+        verbose=True,
+        callbacks=[callback, *callbacks]
+    )
 
-  # get relative context from vectorDB
-  persist_dir = "store"
-  embedding = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY_EMBEDDING)
+    async def wrap_done(fn: Awaitable, event: asyncio.Event):
+        """Wrap an awaitable with a event to signal when it's done or an exception is raised."""
+        try:
+            await fn
+        except Exception as e:
+            print(f"Caught exception: {e}")
+        finally:
+            # Signal the aiter to stop.
+            event.set()
+    # Begin a task that runs in the background.
+    task = asyncio.create_task(wrap_done(
+        model.agenerate(messages=[[HumanMessage(content=message)]]),
+        callback.done),
+    )
 
-  chatllm = ChatOpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY_ANSWER)
-
-  try:
-    client = chromadb.Client(Settings(
-      chroma_db_impl="duckdb+parquet",
-      persist_directory=persist_dir
-  ))
-    client.get_collection(payload.chat_id)
-  except Exception as e:
-    print("正在为当前聊天分组构建矢量数据库...")
-    # TODO: fetch chat-history from db
-    chat_history = payload.chat_history if len(payload.chat_history) !=0 else ["Assistant: Hello, I am a assistant, I will follow your ask, use the following pieces of context to answer the question you asked. Try to give some answer you may like."]
-    vectordb = Chroma.from_texts(persist_directory=persist_dir, texts = chat_history, embedding=embedding, collection_name=payload.chat_id)
-    vectordb.persist()
-    vectordb = None
-
-  db = Chroma(persist_directory=persist_dir, embedding_function=embedding, collection_name=payload.chat_id)
-  docs = db.similarity_search(query=payload.message, k=3)
-
-  print("正在组织语言...", docs)
-  # refine question
-  chain = load_summarize_chain(summaryllm, chain_type="stuff")
-  summary = chain.run(docs)
-  print("生成了上下文", summary)
-
-  format_question = QA_PROMPT.format_prompt(context=summary, question=payload.message).to_string()
-
-  chatllm(format_question)
-
-
-  # custom_qa_chain = LLMChain(llm=chatllm, prompt=QA_PROMPT, verbose=True)
-  # print("正在发起提问...")
-  # res = custom_qa_chain.predict(context = summary, question = payload.prompt)
-  
-  # print("正在保存聊天记录...", ["Human: " + payload.prompt, "Assistant: " + res])
-  # db.add_texts(["Human" + payload.prompt, "Assistant: " + res])
-  # db.persist()
-  
-  return {"message": "res"}
+    async for token in callback.aiter():
+        # Use server-sent-events to stream the response
+        yield f"{token}"
+    await task
 
 
-# if __name__ == "__main__":
-#     uvicorn.run(app, host="0.0.0.0", port=8000)
+class StreamRequest(BaseModel):
+    """Request body for streaming."""
+    message: str
+
+
+
+    
+@app.post("/stream")
+def stream(body: StreamRequest):
+    """1. create or get VectorDB """
+    persist_dir = "store"
+    embeddings = OpenAIEmbeddings(deployment="embedding")
+    chat_group_id = "fixed_chat_group_id"
+
+    db = get_or_create_chatgroup_vector_db(chat_group_id, embeddings, persist_dir)
+    print("正在检索历史聊天记录...")
+    docs = db.similarity_search(query=body.message, k=4)
+
+    """2. summarize the docs"""
+    print("正在组织生成记忆...", docs)
+    summaryllm = AzureChatOpenAI(
+        openai_api_base=OPENAI_API_BASE,
+        openai_api_version=OPENAI_API_VERSION,
+        deployment_name='gpt-35',
+        openai_api_key=OPENAI_API_KEY,
+        openai_api_type=OPENAI_API_TYPE,
+        verbose=True,
+    )
+    
+    chain = load_summarize_chain(summaryllm, chain_type="stuff")
+    summary = chain.run(docs)
+    print("生成记忆：", summary)
+
+    """3. reformat the question"""
+    format_question = QA_PROMPT.format_prompt(context=summary, question=body.message).to_string()
+    print("正在重新组织提问内容...", format_question)
+
+    async def update_vectordb_on_llm_end(chatlist = []):
+        db.add_texts(chatlist)
+        db.persist()
+
+    def update_mysql_on_llm_end(chatlist = []):
+        print("TODO: save chatlog to mysql", chatlist)
+
+    logCallback = HistoryLoggerAsyncHandler([update_vectordb_on_llm_end, update_mysql_on_llm_end])
+
+    """4. QA """
+    return StreamingResponse(send_message(format_question, callbacks=logCallback), media_type="text/event-stream")
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

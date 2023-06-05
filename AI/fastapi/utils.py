@@ -13,6 +13,15 @@ from typing import Any, Dict, List
 from pydantic import BaseModel, validator
 from prompts import QA_PROMPT
 from langchain.callbacks.base import BaseCallbackHandler, AsyncCallbackHandler
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+import queue
+import sys
+from langchain.schema import (
+    AgentAction,
+    AgentFinish,
+    BaseMessage,
+    LLMResult,
+)
 
 
 class ChatMessage(BaseModel):
@@ -51,10 +60,9 @@ def get_or_create_chatgroup_vector_db(chat_id, embedding, persist_dir="store"):
         ))
         client.get_collection(chat_id)
     except Exception as e:
-        print("正在为当前聊天分组构建矢量数据库...")
-        # TODO: fetch chat-history from db
-        chat_history = [
-            "Assistant: Hello, I am a assistant, I will follow your ask, use the following pieces of context to answer the question you asked. Try to give some answer you may like."]
+        print("正在使用历史聊天记录为当前聊天分组构建矢量数据库...")
+        # TODO: retrive chat history from db
+        chat_history = [ "System: You are a assistant, you will answer Human questions, use the following pieces of context to answer the question . Try to give some answer Human may like." ]
         vectordb = Chroma.from_texts(
             persist_directory=persist_dir, texts=chat_history, embedding=embedding, collection_name=chat_id)
         vectordb.persist()
@@ -65,23 +73,24 @@ def get_or_create_chatgroup_vector_db(chat_id, embedding, persist_dir="store"):
 
 
 
-# class MyCustomAsyncHandler(AsyncCallbackHandler):
-#     """Async callback handler that can be used to handle callbacks from langchain."""
+class HistoryLoggerAsyncHandler(AsyncCallbackHandler):
 
-#     async def on_llm_start(
-#         self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any
-#     ) -> None:
-#         """Run when chain starts running."""
-#         print("zzzz....")
-#         await asyncio.sleep(0.3)
-#         class_name = serialized["name"]
-#         print("Hi! I just woke up. Your llm is starting")
+    def __init__(self, callbacks: List = []):
+        self.logger = []
+        self.callbacks = callbacks
 
-#     async def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
-#         """Run when chain ends running."""
-#         print("zzzz....")
-#         await asyncio.sleep(0.3)
-#         print("Hi! I just woke up. Your llm is ending")
+    async def on_llm_start(
+        self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any
+    ) -> None:
+        
+        self.logger.append(prompts[0])
+
+    async def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
+        # TODO: store current QA txt to db
+        self.logger.append(f'Assistant : {response.generations[0][0].text}')
+        # fire all callbacks
+        for callback in self.callbacks:
+            callback(self.logger)
 
 
 class StreamingLLMCallbackHandler(AsyncCallbackHandler):
@@ -95,6 +104,27 @@ class StreamingLLMCallbackHandler(AsyncCallbackHandler):
         resp = ChatResponse(sender="bot", message=token, type="stream")
         await asyncio.sleep(0.3)
         print(resp.dict())
+
+
+class StreamingStdOutCallbackHandlerYield(StreamingStdOutCallbackHandler):
+    def __init__(self, queue):
+        self.q = queue
+    def on_llm_start(
+        self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any
+    ) -> None:
+        """Run when LLM starts running."""
+        with self.q.mutex:
+            self.q.queue.clear()
+
+    def on_llm_new_token(self, token: str, **kwargs: Any) -> None:
+        """Run on new LLM token. Only available when streaming is enabled."""
+        # sys.stdout.write(token)
+        # sys.stdout.flush()
+        self.q.put(token)
+
+    def on_llm_end(self, response, **kwargs: Any) -> None:
+        """Run when LLM ends running."""
+        self.q.put("###finish###")
 
 
 # class StreamingStdOutCallbackHandler(BaseCallbackHandler):
