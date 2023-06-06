@@ -2,6 +2,8 @@ import sys
 import requests
 import time
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 from email_service import qq_email_send
 os.environ["http_proxy"] = "http://127.0.0.1:10809"
@@ -13,10 +15,6 @@ headers = {
 
 
 traderUniqueNames = ["99AC4D8B37871816"] # china tiger
-
-
-
-
 
 def try_to_follow(traderUniqueName):
     url = "https://www.okx.com/priapi/v5/ecotrade/copier/first-settings"
@@ -32,7 +30,7 @@ def try_to_follow(traderUniqueName):
         "copyMode": "FIXED_COST",
         "followAmount": "20"
     }
-   
+
     payload = payload_template.copy()
     payload["traderUniqueName"] = traderUniqueName
     timestamp = int(time.time() * 1000)
@@ -67,6 +65,7 @@ while True:
   for traderUniqueName in traderUniqueNames:
       is_success = try_to_follow(traderUniqueName)
       if is_success:
+          # TODO 未生效，但是成功上车，结果跟这个人亏麻了 😭😭😭
           cancel_follow('0720E541F24DB8FC')
           nicknames = query_current_follow()
           qq_email_send("OKX 自动跟单锁定成功", ",".join(nicknames))

@@ -1,17 +1,10 @@
-import time
-import uuid
+
 from fastapi import FastAPI
 from langchain import LLMChain
 import uvicorn
-import chromadb
-from langchain.document_loaders import DirectoryLoader
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
-from langchain.chains.question_answering import load_qa_chain
 
-from chromadb.config import Settings
-from fastapi import Query
-from chromadb.config import Settings
+from langchain.embeddings.openai import OpenAIEmbeddings
+
 from prompts import QA_PROMPT
 from typing import AsyncIterable, Awaitable
 
