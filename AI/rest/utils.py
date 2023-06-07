@@ -2,31 +2,20 @@ import asyncio
 from typing import Optional, Union, List
 from pydantic import BaseModel
 
-from langchain.chat_models import ChatOpenAI
-from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 import chromadb
 from chromadb.config import Settings
-from langchain.chains.summarize import load_summarize_chain
-from langchain import LLMChain
 from typing import Any, Dict, List
 from pydantic import BaseModel, validator
-from prompts import QA_PROMPT
 from langchain.callbacks.base import BaseCallbackHandler, AsyncCallbackHandler
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-import queue
-import sys
 from langchain.schema import (
-    AgentAction,
-    AgentFinish,
-    BaseMessage,
     LLMResult,
 )
 
 from webbrowser import Chrome
 from langchain.document_loaders import DirectoryLoader
 
-from AI.fastapi.utils import is_chroma_collection_exist
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
 
@@ -63,7 +52,7 @@ def get_or_create_chatgroup_vector_db(chat_id, embedding, persist_dir="store"):
     if not is_chroma_collection_exist(chat_id, persist_dir):
         print("正在使用历史聊天记录为当前聊天分组构建矢量数据库...")
         # TODO: retrive chat history from db
-        chat_history = [ "System: You are a assistant, you will answer Human questions, use the following pieces of context to answer the question . Try to give some answer Human may like." ]
+        chat_history = [ "an assistant is glad to help user, and provide useful advice" ]
         vectordb = Chroma.from_texts(
             persist_directory=persist_dir, texts=chat_history, embedding=embedding, collection_name=chat_id)
         vectordb.persist()
@@ -118,7 +107,7 @@ class HistoryLoggerAsyncHandler(AsyncCallbackHandler):
         self.logger.append(f'Assistant : {response.generations[0][0].text}')
         # fire all callbacks
         for callback in self.callbacks:
-            callback(self.logger)
+            await callback(self.logger)
 
 
 class StreamingLLMCallbackHandler(AsyncCallbackHandler):
