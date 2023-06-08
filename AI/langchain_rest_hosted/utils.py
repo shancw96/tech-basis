@@ -27,7 +27,7 @@ from dotenv import load_dotenv
 from langchain.embeddings import HuggingFaceEmbeddings
 
 
-load_dotenv('/Users/wushangcheng/project/tech-basis/AI/rest/.env')
+load_dotenv()
 
 OPENAI_API_BASE = os.getenv('OPENAI_API_BASE')
 OPENAI_API_VERSION = os.getenv('OPENAI_API_VERSION')
